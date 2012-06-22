@@ -182,6 +182,39 @@ void gfn8(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
   y[7] = t6;
 }
 
+void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
+  int i;
+  unsigned int temp0;
+  unsigned int temp1;
+  unsigned int temp2;
+  unsigned int temp3;
+  /* Step 1 */
+  unsigned int t0 = x[0];
+  unsigned int t1 = x[1];
+  unsigned int t2 = x[2];
+  unsigned int t3 = x[3];
+  /* Step 2 */
+  for (i = 0; i < r; i++) {
+    /* Step 2.1 */
+    t1 ^= f0(rk[2*(r-i) - 2], t0);
+    t3 ^= f1(rk[2*(r-i) - 1], t2);    
+    /* Step 2.2 */
+    temp0 = t0;
+    temp1 = t1;
+    temp2 = t2;
+    temp3 = t3;
+    t0 = temp3;
+    t1 = temp0;
+    t2 = temp1;
+    t3 = temp2;
+  }
+  /* Step 3 */
+  y[0] = t1;
+  y[1] = t2;
+  y[2] = t3;
+  y[3] = t0;
+}
+
 void encryption(unsigned int p*, unsigned int c*) {
 
 	unsigned int t* = malloc(sizeof(unsigned int) * 4);
