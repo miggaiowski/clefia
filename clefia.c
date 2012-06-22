@@ -218,7 +218,7 @@ void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
   y[3] = t0;
 }
 
-void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
+void key_sheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
 	
 	unsigned int y[4];
 	unsigned int l[4];
@@ -229,7 +229,7 @@ void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
 	/* step 2 */
 }
 
-void encryption(unsigned int p*, unsigned int c*, unsigned int k*) {
+void encryption(unsigned int *p, unsigned int *c, unsigned int *k) {
 
 	unsigned int t[4];
 	unsigned int wk[4];
@@ -258,7 +258,7 @@ void encryption(unsigned int p*, unsigned int c*, unsigned int k*) {
 	c[3] = t[3] ^ wk[3];
 }
 
-void decryption(unsigned int p*, unsigned int c*, unsigned int * k) {
+void decryption(unsigned int *p, unsigned int *c, unsigned int * k) {
 	
 	unsigned int t[4];
 	unsigned int wk[4];
@@ -315,12 +315,12 @@ int main() {
   unsigned int decrypted[4];
   
   encryption(plaintext, encrypted, key);
-  decryption(decryption, encrypted, key);
+  decryption(decrypted, encrypted, key);
 
-  if (equal(ciphertext, encrypted)) {
+  if (equal(ciphertext, encrypted, 4)) {
     printf("Encryption works.\n");
   }
-  if (equal(plaintext, decrypted)) {
+  if (equal(plaintext, decrypted, 4)) {
     printf("Decryption works.\n");
   }
 
