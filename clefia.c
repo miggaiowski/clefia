@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ROUNDS128 18
+
 #define W0_4   0xf0000000
 #define W4_8   0x0f000000
 #define W8_12  0x00f00000
@@ -48,3 +50,33 @@ unsigned int f1(unsigned int rk, unsigned int x) {
   /* Step 3 */
   
 }
+
+void encryption(unsigned int p*, unsigned int c*) {
+
+	unsigned int t* = malloc(sizeof(unsigned int) * 4);
+	unsigned int wk* = malloc(sizeof(unsigned int) * 4);
+	unsigned int rk* = malloc(sizeof(unsigned int) * 36);
+	
+	int r;
+	for (r = 1; r <= ROUNDS128; r++) {
+	
+		key_scheduling(r, wk, rk);
+		
+		/* step 1 */
+		t[0] = p[0];
+		t[1] = p[1] ^ wk[0];
+		t[2] = p[2];
+		t[3] = p[3] ^ wk[1];
+		
+		/* step 2 */
+		GFN(4, r, rk, t, y);
+		t[0] = y[0];
+		t[1] = y[1];
+		t[2] = y[2];
+		t[3] = y[3];
+		
+		/* step 3 */
+		
+	}
+}
+
