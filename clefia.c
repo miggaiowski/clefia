@@ -18,6 +18,7 @@
 
 #define W0_6 0xfe000000
 #define W7_31 0x01ffffff
+#define W25_31 0x0000007f
 
 #define B0_4   0xf0
 #define B4_8   0x0f
@@ -216,6 +217,14 @@ void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
   y[1] = t2;
   y[2] = t3;
   y[3] = t0;
+}
+
+void sigma(unsigned int x*, unsigned int* y) {
+	
+	y[0] = ((x[0] & W7_31) << 7) | ((x[1] & W0_6) >> 25);
+	y[1] = ((x[1] & W7_31) << 7) | ((x[3] & W25_31);
+	y[2] = (x[0] & W0_6) | ((x[2] & W0_24) >> 7);
+	y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
 }
 
 void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
