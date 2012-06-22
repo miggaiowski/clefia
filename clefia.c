@@ -80,7 +80,7 @@ unsigned int con[60] = {
 
 unsigned int word_from_bytes(char a, char b, char c, char d) {
   unsigned int res = 0;
-  res = (a << 24) + (b << 16) + (c << 8) + d;
+  res = ((a << 24) | 0x00ffffff) & ((b << 16) | 0xff00ffff ) & ((c << 8) | 0xffff00ff) & (d | 0xffffff00);
   return res;
 }
 
@@ -101,34 +101,35 @@ unsigned int f0(unsigned int rk, unsigned int x) {
   /* Step 1 */
   unsigned int t = rk ^ x;
   /* Step 2 */
-  char t0 = t & W0_8;
-  char t1 = t & W8_16;
-  char t2 = t & W16_24;
+  char t0 = (t & W0_8) >> 24;
+  char t1 = (t & W8_16) >> 16;
+  char t2 = (t & W16_24) >> 8;
   char t3 = t & W24_32;
-  t0 = s0[t0 & B0_4][t0 & B4_8];
-  t1 = s1[t1 & B0_4][t1 & B4_8];
-  t2 = s0[t2 & B0_4][t2 & B4_8];
-  t3 = s1[t3 & B0_4][t3 & B4_8];
+  t0 = s0[(t0 & B0_4) >> 4][t0 & B4_8];
+  t1 = s1[(t1 & B0_4) >> 4][t1 & B4_8];
+  t2 = s0[(t2 & B0_4) >> 4][t2 & B4_8];
+  t3 = s1[(t3 & B0_4) >> 4][t3 & B4_8];
   /* Step 3 */
   char y0 =      t0  ^ mul2(t1) ^ mul4(t2) ^ mul6(t3);
   char y1 = mul2(t0) ^      t1  ^ mul6(t2) ^ mul4(t3);
   char y2 = mul4(t0) ^ mul6(t1) ^      t2  ^ mul2(t3);
   char y3 = mul6(t0) ^ mul4(t1) ^ mul2(t2) ^       t3;
-  return word_from_bytes(y0, y1, y2, y3);
+  unsigned int y = word_from_bytes(y0, y1, y2, y3);
+  return y;
 }
 
 unsigned int f1(unsigned int rk, unsigned int x) {
   /* Step 1 */
   unsigned int t = rk ^ x;
   /* Step 2 */
-  char t0 = t & W0_8;
-  char t1 = t & W8_16;
-  char t2 = t & W16_24;
+  char t0 = (t & W0_8) >> 24;
+  char t1 = (t & W8_16) >> 16;
+  char t2 = (t & W16_24) >> 8;
   char t3 = t & W24_32;
-  t0 = s1[t0 & B0_4][t0 & B4_8];
-  t1 = s0[t1 & B0_4][t1 & B4_8];
-  t2 = s1[t2 & B0_4][t2 & B4_8];
-  t3 = s0[t3 & B0_4][t3 & B4_8];
+  t0 = s1[(t0 & B0_4) >> 4][t0 & B4_8];
+  t1 = s0[(t1 & B0_4) >> 4][t1 & B4_8];
+  t2 = s1[(t2 & B0_4) >> 4][t2 & B4_8];
+  t3 = s0[(t3 & B0_4) >> 4][t3 & B4_8];
   /* Step 3 */
   char y0 =      t0  ^ mul8(t1) ^ mul2(t2) ^ mulA(t3);
   char y1 = mul8(t0) ^      t1  ^ mulA(t2) ^ mul2(t3);
@@ -240,9 +241,9 @@ void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
 
 void sigma(unsigned int *x, unsigned int* y) {
 	
-  y[0] = ((x[0] & W7_31) << 7) | ((x[1] & W0_6) >> 25);
-  y[1] = ((x[1] & W7_31) << 7) | (x[3] & W25_31);
-  y[2] = (x[0] & W0_6) | ((x[2] & W0_24) >> 7);
+  y[0] = ((x[0] & W7_31) << 7)   | ((x[1] & W0_6) >> 25);
+  y[1] = ((x[1] & W7_31) << 7)   | (x[3]  & W25_31);
+  y[2] = (x[0]  & W0_6)          | ((x[2] & W0_24) >> 7);
   y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
 }
 
@@ -260,20 +261,12 @@ void key_scheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
   l[2] = y[2];
   l[3] = y[3];
 
-  printf("L: ");
-  for (i = 0; i < 4; i++) {
-    printf("%x ", l[i]);
-  }
-  printf("\n");
-
-
-	
   /* step 2 */
   wk[0] = k[0];
   wk[1] = k[1];
   wk[2] = k[2];
   wk[3] = k[3];
-	
+
   /* step 3 */
   for (i = 0; i < 9; i++) {
     t[0] = l[0] ^ con[24 + 4 * i];
@@ -298,8 +291,7 @@ void key_scheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
     rk[4*i+1] = t[1];
     rk[4*i+2] = t[2];
     rk[4*i+3] = t[3];	
-  }
-
+  }  
 }
 
 void encryption(unsigned int *p, unsigned int *c, unsigned int *k) {
@@ -316,9 +308,11 @@ void encryption(unsigned int *p, unsigned int *c, unsigned int *k) {
   t[1] = p[1] ^ wk[0];
   t[2] = p[2];
   t[3] = p[3] ^ wk[1];
+  
+  
 	
   /* step 2 */
-  gfn4(8, rk, t, y);
+  gfn4(18, rk, t, y);
   t[0] = y[0];
   t[1] = y[1];
   t[2] = y[2];
@@ -347,7 +341,7 @@ void decryption(unsigned int *p, unsigned int *c, unsigned int * k) {
   t[3] = c[3] ^ wk[3];
 	
   /* step 2 */
-  gfn_inv4(8, rk, t, y);
+  gfn_inv4(18, rk, t, y);
   t[0] = y[0];
   t[1] = y[1];
   t[2] = y[2];
@@ -388,14 +382,14 @@ int main() {
   unsigned int decrypted[4];
   
   encryption(plaintext, encrypted, key);
-  /* decryption(decrypted, encrypted, key); */
+  decryption(decrypted, encrypted, key);
 
   if (equal(ciphertext, encrypted, 4)) {
     printf("Encryption works.\n");
   }
-  /* if (equal(plaintext, decrypted, 4)) { */
-  /*   printf("Decryption works.\n"); */
-  /* } */
+  if (equal(plaintext, decrypted, 4)) {
+    printf("Decryption works.\n");
+  }
 
   return 0;
 }  
