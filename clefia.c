@@ -222,11 +222,46 @@ void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
 	
 	unsigned int y[4];
 	unsigned int l[4];
+	unsigned int t[4];
 	
 	/* step 1 */
-	l = GFN4(12, con, k);
+	gfn4(12, con, k, y);
+	l[0] = y[0];
+	l[1] = y[1];
+	l[2] = y[2];
+	l[3] = y[3];
 	
 	/* step 2 */
+	wk[0] = k[0];
+	wk[1] = k[1];
+	wk[2] = k[2];
+	wk[3] = k[3];
+	
+	/* step 3 */
+	for (int i = 0; i < 9; i++) {
+		t[0] = l[0] ^ con[24 + 4 * i];
+		t[1] = l[1] ^ con[24 + 4 * i + 1];
+		t[2] = l[2] ^ con[24 + 4 * i + 2];
+		t[3] = l[3] ^ con[24 + 4 * i + 3];
+		
+		sigma(l, y);
+		l[0] = y[0];
+		l[1] = y[1];
+		l[2] = y[2];
+		l[3] = y[3];
+		
+		if (i % 2 == 1) {
+			t[0] = t[0] ^ k[0];
+			t[1] = t[1] ^ k[1];
+			t[2] = t[2] ^ k[2];
+			t[3] = t[3] ^ k[3];	
+		}
+		
+		rk[4*i] = t[0];
+		rk[4*i+1] = t[1];
+		rk[4*i+2] = t[2];
+		rk[4*i+3] = t[3];	
+	}
 }
 
 void encryption(unsigned int p*, unsigned int c*, unsigned int k*) {
