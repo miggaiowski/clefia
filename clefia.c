@@ -114,6 +114,74 @@ unsigned int f1(unsigned int rk, unsigned int x) {
   return word_from_bytes(y0, y1, y2, y3);
 }
 
+void gfn4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
+  int i;
+  unsigned int temp;
+  /* Step 1 */
+  unsigned int t0 = x[0];
+  unsigned int t1 = x[1];
+  unsigned int t2 = x[2];
+  unsigned int t3 = x[3];
+  /* Step 2 */
+  for (i = 0; i < r; i++) {
+    /* Step 2.1 */
+    t1 ^= f0(rk[2*i], t0);
+    t3 ^= f1(rk[2*i + 1], t2);    
+    /* Step 2.2 */
+    temp = t0;
+    t0 = t1;
+    t1 = t2;
+    t2 = t3;
+    t3 = temp;
+  }
+  /* Step 3 */
+  y[0] = t3;
+  y[1] = t0;
+  y[2] = t1;
+  y[3] = t2;
+}
+
+void gfn8(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
+  int i;
+  unsigned int temp;
+  /* Step 1 */
+  unsigned int t0 = x[0];
+  unsigned int t1 = x[1];
+  unsigned int t2 = x[2];
+  unsigned int t3 = x[3];
+  unsigned int t4 = x[4];
+  unsigned int t5 = x[5];
+  unsigned int t6 = x[6];
+  unsigned int t7 = x[7];
+  /* Step 2 */
+  for (i = 0; i < r; i++) {
+    /* Step 2.1 */
+    t1 ^= f0(rk[4*i], t0);
+    t3 ^= f1(rk[4*i + 1], t2);    
+    t5 ^= f0(rk[4*1 + 2], t4);
+    t7 ^= f1(rk[4*i + 3], t6);
+    /* Step 2.2 */
+    temp = t0;
+    t0 = t1;
+    t1 = t2;
+    t2 = t3;
+    t3 = t4;
+    t4 = t5;
+    t5 = t6;
+    t6 = t7;
+    t7 = temp;
+  }
+  /* Step 3 */
+  y[0] = t7;
+  y[1] = t0;
+  y[2] = t1;
+  y[3] = t2;
+  y[4] = t3;
+  y[5] = t4;
+  y[6] = t5;
+  y[7] = t6;
+}
+
 void encryption(unsigned int p*, unsigned int c*) {
 
 	unsigned int t* = malloc(sizeof(unsigned int) * 4);
