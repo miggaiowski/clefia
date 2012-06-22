@@ -16,9 +16,9 @@
 #define W16_24 0x0000ff00
 #define W24_32 0x000000ff
 
-#define W0_6 0xfe000000
-#define W0_24 0xffffff80
-#define W7_31 0x01ffffff
+#define W0_6   0xfe000000
+#define W0_24  0xffffff80
+#define W7_31  0x01ffffff
 #define W25_31 0x0000007f
 
 #define B0_4   0xf0
@@ -61,21 +61,21 @@ char s1[16][16] = {
   0xf7, 0xe4, 0x79, 0x96, 0xa2, 0xfc, 0x6d, 0xb2, 0x6b, 0x03, 0xe1, 0x2e, 0x7d, 0x14, 0x95, 0x1d};
  
 unsigned int con[60] = {  
-   0xf56b7aeb, 0x994a8a42, 0x96a4bd75, 0xfa854521,
-   0x735b768a, 0x1f7abac4, 0xd5bc3b45, 0xb99d5d62,
-   0x52d73592, 0x3ef636e5, 0xc57a1ac9, 0xa95b9b72,
-   0x5ab42554, 0x369555ed, 0x1553ba9a, 0x7972b2a2,
-   0xe6b85d4d, 0x8a995951, 0x4b550696, 0x2774b4fc,
-   0xc9bb034b, 0xa59a5a7e, 0x88cc81a5, 0xe4ed2d3f,
-   0x7c6f68e2, 0x104e8ecb, 0xd2263471, 0xbe07c765,
-   0x511a3208, 0x3d3bfbe6, 0x1084b134, 0x7ca565a7,
-   0x304bf0aa, 0x5c6aaa87, 0xf4347855, 0x9815d543,
-   0x4213141a, 0x2e32f2f5, 0xcd180a0d, 0xa139f97a,
-   0x5e852d36, 0x32a464e9, 0xc353169b, 0xaf72b274,
-   0x8db88b4d, 0xe199593a, 0x7ed56d96, 0x12f434c9,
-   0xd37b36cb, 0xbf5a9a64, 0x85ac9b65, 0xe98d4d32,
-   0x7adf6582, 0x16fe3ecd, 0xd17e32c1, 0xbd5f9f66,
-   0x50b63150, 0x3c9757e7, 0x1052b098, 0x7c73b3a7
+  0xf56b7aeb, 0x994a8a42, 0x96a4bd75, 0xfa854521,
+  0x735b768a, 0x1f7abac4, 0xd5bc3b45, 0xb99d5d62,
+  0x52d73592, 0x3ef636e5, 0xc57a1ac9, 0xa95b9b72,
+  0x5ab42554, 0x369555ed, 0x1553ba9a, 0x7972b2a2,
+  0xe6b85d4d, 0x8a995951, 0x4b550696, 0x2774b4fc,
+  0xc9bb034b, 0xa59a5a7e, 0x88cc81a5, 0xe4ed2d3f,
+  0x7c6f68e2, 0x104e8ecb, 0xd2263471, 0xbe07c765,
+  0x511a3208, 0x3d3bfbe6, 0x1084b134, 0x7ca565a7,
+  0x304bf0aa, 0x5c6aaa87, 0xf4347855, 0x9815d543,
+  0x4213141a, 0x2e32f2f5, 0xcd180a0d, 0xa139f97a,
+  0x5e852d36, 0x32a464e9, 0xc353169b, 0xaf72b274,
+  0x8db88b4d, 0xe199593a, 0x7ed56d96, 0x12f434c9,
+  0xd37b36cb, 0xbf5a9a64, 0x85ac9b65, 0xe98d4d32,
+  0x7adf6582, 0x16fe3ecd, 0xd17e32c1, 0xbd5f9f66,
+  0x50b63150, 0x3c9757e7, 0x1052b098, 0x7c73b3a7
 };
 
 unsigned int word_from_bytes(char a, char b, char c, char d) {
@@ -240,115 +240,124 @@ void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
 
 void sigma(unsigned int *x, unsigned int* y) {
 	
-	y[0] = ((x[0] & W7_31) << 7) | ((x[1] & W0_6) >> 25);
-	y[1] = ((x[1] & W7_31) << 7) | (x[3] & W25_31);
-	y[2] = (x[0] & W0_6) | ((x[2] & W0_24) >> 7);
-	y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
+  y[0] = ((x[0] & W7_31) << 7) | ((x[1] & W0_6) >> 25);
+  y[1] = ((x[1] & W7_31) << 7) | (x[3] & W25_31);
+  y[2] = (x[0] & W0_6) | ((x[2] & W0_24) >> 7);
+  y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
 }
 
-void key_sheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
+void key_scheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
 	
-	unsigned int y[4];
-	unsigned int l[4];
-	unsigned int t[4];
-	int i;
+  unsigned int y[4];
+  unsigned int l[4];
+  unsigned int t[4];
+  int i;
 	
-	/* step 1 */
-	gfn4(12, con, k, y);
-	l[0] = y[0];
-	l[1] = y[1];
-	l[2] = y[2];
-	l[3] = y[3];
+  /* step 1 */
+  gfn4(12, con, k, y);
+  l[0] = y[0];
+  l[1] = y[1];
+  l[2] = y[2];
+  l[3] = y[3];
+
+  printf("L: ");
+  for (i = 0; i < 4; i++) {
+    printf("%x ", l[i]);
+  }
+  printf("\n");
+
+
 	
-	/* step 2 */
-	wk[0] = k[0];
-	wk[1] = k[1];
-	wk[2] = k[2];
-	wk[3] = k[3];
+  /* step 2 */
+  wk[0] = k[0];
+  wk[1] = k[1];
+  wk[2] = k[2];
+  wk[3] = k[3];
 	
-	/* step 3 */
-	for (i = 0; i < 9; i++) {
-		t[0] = l[0] ^ con[24 + 4 * i];
-		t[1] = l[1] ^ con[24 + 4 * i + 1];
-		t[2] = l[2] ^ con[24 + 4 * i + 2];
-		t[3] = l[3] ^ con[24 + 4 * i + 3];
+  /* step 3 */
+  for (i = 0; i < 9; i++) {
+    t[0] = l[0] ^ con[24 + 4 * i];
+    t[1] = l[1] ^ con[24 + 4 * i + 1];
+    t[2] = l[2] ^ con[24 + 4 * i + 2];
+    t[3] = l[3] ^ con[24 + 4 * i + 3];
 		
-		sigma(l, y);
-		l[0] = y[0];
-		l[1] = y[1];
-		l[2] = y[2];
-		l[3] = y[3];
+    sigma(l, y);
+    l[0] = y[0];
+    l[1] = y[1];
+    l[2] = y[2];
+    l[3] = y[3];
 		
-		if (i % 2 == 1) {
-			t[0] = t[0] ^ k[0];
-			t[1] = t[1] ^ k[1];
-			t[2] = t[2] ^ k[2];
-			t[3] = t[3] ^ k[3];	
-		}
+    if (i % 2 == 1) {
+      t[0] = t[0] ^ k[0];
+      t[1] = t[1] ^ k[1];
+      t[2] = t[2] ^ k[2];
+      t[3] = t[3] ^ k[3];	
+    }
 		
-		rk[4*i] = t[0];
-		rk[4*i+1] = t[1];
-		rk[4*i+2] = t[2];
-		rk[4*i+3] = t[3];	
-	}
+    rk[4*i] = t[0];
+    rk[4*i+1] = t[1];
+    rk[4*i+2] = t[2];
+    rk[4*i+3] = t[3];	
+  }
+
 }
 
 void encryption(unsigned int *p, unsigned int *c, unsigned int *k) {
 
-	unsigned int t[4];
-	unsigned int wk[4];
-	unsigned int rk[36];
-	unsigned int y[4];
+  unsigned int t[4];
+  unsigned int wk[4];
+  unsigned int rk[36];
+  unsigned int y[4];
 	
-	key_scheduling(k, wk, rk);
+  key_scheduling(k, wk, rk);
 	
-	/* step 1 */
-	t[0] = p[0];
-	t[1] = p[1] ^ wk[0];
-	t[2] = p[2];
-	t[3] = p[3] ^ wk[1];
+  /* step 1 */
+  t[0] = p[0];
+  t[1] = p[1] ^ wk[0];
+  t[2] = p[2];
+  t[3] = p[3] ^ wk[1];
 	
-	/* step 2 */
-	GFN4(8, rk, t, y);
-	t[0] = y[0];
-	t[1] = y[1];
-	t[2] = y[2];
-	t[3] = y[3];
+  /* step 2 */
+  gfn4(8, rk, t, y);
+  t[0] = y[0];
+  t[1] = y[1];
+  t[2] = y[2];
+  t[3] = y[3];
 	
-	/* step 3 */
-	c[0] = t[0];
-	c[1] = t[1] ^ wk[2];
-	c[2] = t[2];
-	c[3] = t[3] ^ wk[3];
+  /* step 3 */
+  c[0] = t[0];
+  c[1] = t[1] ^ wk[2];
+  c[2] = t[2];
+  c[3] = t[3] ^ wk[3];
 }
 
 void decryption(unsigned int *p, unsigned int *c, unsigned int * k) {
 	
-	unsigned int t[4];
-	unsigned int wk[4];
-	unsigned int rk[36];
-	unsigned int y[4];
+  unsigned int t[4];
+  unsigned int wk[4];
+  unsigned int rk[36];
+  unsigned int y[4];
 		
-	key_scheduling(k, wk, rk);
+  key_scheduling(k, wk, rk);
 	
-	/* step 1 */
-	t[0] = c[0];
-	t[1] = c[1] ^ wk[2];
-	t[2] = c[2];
-	t[3] = c[3] ^ wk[3];
+  /* step 1 */
+  t[0] = c[0];
+  t[1] = c[1] ^ wk[2];
+  t[2] = c[2];
+  t[3] = c[3] ^ wk[3];
 	
-	/* step 2 */
-	GFNINV4(8, rk, t, y);
-	t[0] = y[0];
-	t[1] = y[1];
-	t[2] = y[2];
-	t[3] = y[3];
+  /* step 2 */
+  gfn_inv4(8, rk, t, y);
+  t[0] = y[0];
+  t[1] = y[1];
+  t[2] = y[2];
+  t[3] = y[3];
 	
-	/* step 3 */
-	p[0] = t[0];
-	p[1] = t[1] ^ wk[0];
-	p[2] = t[2];
-	p[3] = t[3] ^ wk[1];	
+  /* step 3 */
+  p[0] = t[0];
+  p[1] = t[1] ^ wk[0];
+  p[2] = t[2];
+  p[3] = t[3] ^ wk[1];	
 }	
 	
 /* Retorna 1 se vetores são iguais, 0 c.c. */
@@ -364,29 +373,29 @@ int equal(unsigned int* a, unsigned int* b, unsigned int size) {
 int main() {
   /* Teste 128-bit */
   unsigned int key[4] = {0xffeeddcc, 
-                          0xbbaa9988,
-                          0x77665544,
-                          0x33221100};
+                         0xbbaa9988,
+                         0x77665544,
+                         0x33221100};
   unsigned int plaintext[4] = {0x00010203,
-                                0x04050607,
-                                0x08090a0b,
-                                0x0c0d0e0f};
+                               0x04050607,
+                               0x08090a0b,
+                               0x0c0d0e0f};
   unsigned int ciphertext[4] = {0xde2bf2fd,
-                                 0x9b74aacd,
-                                 0xf1298555,
-                                 0x459494fd};
+                                0x9b74aacd,
+                                0xf1298555,
+                                0x459494fd};
   unsigned int encrypted[4];
   unsigned int decrypted[4];
   
   encryption(plaintext, encrypted, key);
-  decryption(decrypted, encrypted, key);
+  /* decryption(decrypted, encrypted, key); */
 
   if (equal(ciphertext, encrypted, 4)) {
     printf("Encryption works.\n");
   }
-  if (equal(plaintext, decrypted, 4)) {
-    printf("Decryption works.\n");
-  }
+  /* if (equal(plaintext, decrypted, 4)) { */
+  /*   printf("Decryption works.\n"); */
+  /* } */
 
   return 0;
 }  
