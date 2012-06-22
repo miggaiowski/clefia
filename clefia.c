@@ -227,7 +227,7 @@ void sigma(unsigned int x*, unsigned int* y) {
 	y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
 }
 
-void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
+void key_sheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
 	
 	unsigned int y[4];
 	unsigned int l[4];
@@ -273,7 +273,7 @@ void key_sheduling(unsigned int k*, unsigned int wk*, unsigned int rk*) {
 	}
 }
 
-void encryption(unsigned int p*, unsigned int c*, unsigned int k*) {
+void encryption(unsigned int *p, unsigned int *c, unsigned int *k) {
 
 	unsigned int t[4];
 	unsigned int wk[4];
@@ -302,7 +302,7 @@ void encryption(unsigned int p*, unsigned int c*, unsigned int k*) {
 	c[3] = t[3] ^ wk[3];
 }
 
-void decryption(unsigned int p*, unsigned int c*, unsigned int * k) {
+void decryption(unsigned int *p, unsigned int *c, unsigned int * k) {
 	
 	unsigned int t[4];
 	unsigned int wk[4];
@@ -331,3 +331,42 @@ void decryption(unsigned int p*, unsigned int c*, unsigned int * k) {
 	p[3] = t[3] ^ wk[1];	
 }	
 	
+/* Retorna 1 se vetores são iguais, 0 c.c. */
+int equal(unsigned int* a, unsigned int* b, unsigned int size) {
+  int i;
+  for (i = 0; i < size; i++) {
+    if (a[i] != b[i])
+      return 0;
+  }
+  return 1;
+}
+
+int main() {
+  /* Teste 128-bit */
+  unsigned int key[4] = {0xffeeddcc, 
+                          0xbbaa9988,
+                          0x77665544,
+                          0x33221100};
+  unsigned int plaintext[4] = {0x00010203,
+                                0x04050607,
+                                0x08090a0b,
+                                0x0c0d0e0f};
+  unsigned int ciphertext[4] = {0xde2bf2fd,
+                                 0x9b74aacd,
+                                 0xf1298555,
+                                 0x459494fd};
+  unsigned int encrypted[4];
+  unsigned int decrypted[4];
+  
+  encryption(plaintext, encrypted, key);
+  decryption(decrypted, encrypted, key);
+
+  if (equal(ciphertext, encrypted, 4)) {
+    printf("Encryption works.\n");
+  }
+  if (equal(plaintext, decrypted, 4)) {
+    printf("Decryption works.\n");
+  }
+
+  return 0;
+}  
