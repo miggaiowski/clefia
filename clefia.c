@@ -112,7 +112,42 @@ void encryption(unsigned int p*, unsigned int c*) {
 		t[3] = y[3];
 		
 		/* step 3 */
-		
+		c[0] = t[0];
+		c[1] = t[1] ^ wk[2];
+		c[2] = t[2];
+		c[3] = t[3] ^ wk[3];
 	}
+}
+
+void decryption(unsigned int p*, unsigned int c*) {
+	
+	unsigned int t* = malloc(sizeof(unsigned int) * 4);
+	unsigned int wk* = malloc(sizeof(unsigned int) * 4);
+	unsigned int rk* = malloc(sizeof(unsigned int) * 36);
+	
+	int r;
+	for (r = 1; r <= ROUNDS128; r++) {
+		
+		key_scheduling(r, wk, rk);
+		
+		/* step 1 */
+		t[0] = c[0];
+		t[1] = c[1] ^ wk[2];
+		t[2] = c[2];
+		t[3] = c[3] ^ wk[3];
+		
+		/* step 2 */
+		GFNINV(4, r, rk, t, y);
+		t[0] = y[0];
+		t[1] = y[1];
+		t[2] = y[2];
+		t[3] = y[3];
+		
+		/* step 3 */
+		p[0] = t[0];
+		p[1] = t[1] ^ wk[0];
+		p[2] = t[2];
+		p[3] = t[3] ^ wk[1];	
+	}	
 }
 
