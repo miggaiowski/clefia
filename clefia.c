@@ -55,6 +55,25 @@ char s1[16][16] = {
   0xd4, 0x75, 0x66, 0xbb, 0x68, 0x9f, 0x50, 0x02, 0x01, 0x3c, 0x7f, 0x8d, 0x1a, 0x88, 0xbd, 0xac,
   0xf7, 0xe4, 0x79, 0x96, 0xa2, 0xfc, 0x6d, 0xb2, 0x6b, 0x03, 0xe1, 0x2e, 0x7d, 0x14, 0x95, 0x1d};
 
+unsigned int word_from_bytes(char a, char b, char c, char d) {
+  unsigned int res = 0;
+  res = (a << 24) + (b << 16) + (c << 8) + d;
+  return res;
+}
+
+unsigned char mul2(unsigned char x) {
+  /* multiplicacao em GF(2^8) (p(x) = '11d') */
+  if(x & 0x80U){
+    x ^= 0x0eU;
+  }
+  return ((x << 1) | (x >> 7));
+}
+
+#define mul4(_x) (mul2(mul2((_x))))
+#define mul6(_x) (mul2((_x)) ^ mul4((_x)))
+#define mul8(_x) (mul2(mul4((_x))))
+#define mulA(_x) (mul2((_x)) ^ mul8((_x)))
+
 unsigned int f0(unsigned int rk, unsigned int x) {
   /* Step 1 */
   unsigned int t = rk ^ x;
@@ -68,7 +87,11 @@ unsigned int f0(unsigned int rk, unsigned int x) {
   t2 = s0[t2 & B0_4][t2 & B4_8];
   t3 = s1[t3 & B0_4][t3 & B4_8];
   /* Step 3 */
-  
+  char y0 =      t0  ^ mul2(t1) ^ mul4(t2) ^ mul6(t3);
+  char y1 = mul2(t0) ^      t1  ^ mul6(t2) ^ mul4(t3);
+  char y2 = mul4(t0) ^ mul6(t1) ^      t2  ^ mul2(t3);
+  char y3 = mul6(t0) ^ mul4(t1) ^ mul2(t2) ^       t3;
+  return word_from_bytes(y0, y1, y2, y3);
 }
 
 unsigned int f1(unsigned int rk, unsigned int x) {
@@ -84,7 +107,11 @@ unsigned int f1(unsigned int rk, unsigned int x) {
   t2 = s1[t2 & B0_4][t2 & B4_8];
   t3 = s0[t3 & B0_4][t3 & B4_8];
   /* Step 3 */
-  
+  char y0 =      t0  ^ mul8(t1) ^ mul2(t2) ^ mulA(t3);
+  char y1 = mul8(t0) ^      t1  ^ mulA(t2) ^ mul2(t3);
+  char y2 = mul2(t0) ^ mulA(t1) ^      t2  ^ mul8(t3);
+  char y3 = mulA(t0) ^ mul2(t1) ^ mul8(t2) ^       t3;
+  return word_from_bytes(y0, y1, y2, y3);
 }
 
 void encryption(unsigned int p*, unsigned int c*) {
