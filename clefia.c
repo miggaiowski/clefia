@@ -17,6 +17,7 @@
 #define W24_32 0x000000ff
 
 #define W0_6 0xfe000000
+#define W0_24 0xffffff80
 #define W7_31 0x01ffffff
 #define W25_31 0x0000007f
 
@@ -58,6 +59,24 @@ char s1[16][16] = {
   0xf8, 0x5f, 0xab, 0xf1, 0x1b, 0x42, 0x81, 0xd6, 0xbe, 0x44, 0x29, 0xa6, 0x57, 0xb9, 0xaf, 0xf2,
   0xd4, 0x75, 0x66, 0xbb, 0x68, 0x9f, 0x50, 0x02, 0x01, 0x3c, 0x7f, 0x8d, 0x1a, 0x88, 0xbd, 0xac,
   0xf7, 0xe4, 0x79, 0x96, 0xa2, 0xfc, 0x6d, 0xb2, 0x6b, 0x03, 0xe1, 0x2e, 0x7d, 0x14, 0x95, 0x1d};
+ 
+unsigned int con[60] = {  
+   0xf56b7aeb, 0x994a8a42, 0x96a4bd75, 0xfa854521,
+   0x735b768a, 0x1f7abac4, 0xd5bc3b45, 0xb99d5d62,
+   0x52d73592, 0x3ef636e5, 0xc57a1ac9, 0xa95b9b72,
+   0x5ab42554, 0x369555ed, 0x1553ba9a, 0x7972b2a2,
+   0xe6b85d4d, 0x8a995951, 0x4b550696, 0x2774b4fc,
+   0xc9bb034b, 0xa59a5a7e, 0x88cc81a5, 0xe4ed2d3f,
+   0x7c6f68e2, 0x104e8ecb, 0xd2263471, 0xbe07c765,
+   0x511a3208, 0x3d3bfbe6, 0x1084b134, 0x7ca565a7,
+   0x304bf0aa, 0x5c6aaa87, 0xf4347855, 0x9815d543,
+   0x4213141a, 0x2e32f2f5, 0xcd180a0d, 0xa139f97a,
+   0x5e852d36, 0x32a464e9, 0xc353169b, 0xaf72b274,
+   0x8db88b4d, 0xe199593a, 0x7ed56d96, 0x12f434c9,
+   0xd37b36cb, 0xbf5a9a64, 0x85ac9b65, 0xe98d4d32,
+   0x7adf6582, 0x16fe3ecd, 0xd17e32c1, 0xbd5f9f66,
+   0x50b63150, 0x3c9757e7, 0x1052b098, 0x7c73b3a7
+};
 
 unsigned int word_from_bytes(char a, char b, char c, char d) {
   unsigned int res = 0;
@@ -219,10 +238,10 @@ void gfn_inv4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
   y[3] = t0;
 }
 
-void sigma(unsigned int x*, unsigned int* y) {
+void sigma(unsigned int *x, unsigned int* y) {
 	
 	y[0] = ((x[0] & W7_31) << 7) | ((x[1] & W0_6) >> 25);
-	y[1] = ((x[1] & W7_31) << 7) | ((x[3] & W25_31);
+	y[1] = ((x[1] & W7_31) << 7) | (x[3] & W25_31);
 	y[2] = (x[0] & W0_6) | ((x[2] & W0_24) >> 7);
 	y[3] = ((x[2] & W25_31) << 25) | ((x[3] & W0_24) >> 7);
 }
@@ -232,6 +251,7 @@ void key_sheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
 	unsigned int y[4];
 	unsigned int l[4];
 	unsigned int t[4];
+	int i;
 	
 	/* step 1 */
 	gfn4(12, con, k, y);
@@ -247,7 +267,7 @@ void key_sheduling(unsigned int *k, unsigned int *wk, unsigned int *rk) {
 	wk[3] = k[3];
 	
 	/* step 3 */
-	for (int i = 0; i < 9; i++) {
+	for (i = 0; i < 9; i++) {
 		t[0] = l[0] ^ con[24 + 4 * i];
 		t[1] = l[1] ^ con[24 + 4 * i + 1];
 		t[2] = l[2] ^ con[24 + 4 * i + 2];
