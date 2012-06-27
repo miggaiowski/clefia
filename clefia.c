@@ -727,38 +727,38 @@ int main(int argc, char **argv) {
   FILE *f;
   int nread;
 
-  /* printf("Lendo entrada\n"); */
-  /* f = fopen(argv[1], "r"); */
-  /* nread = fread(data, sizeof(char), 300*1024*1024, f); */
-  /* fclose(f); */
-  /* printf("Bytes read: %d\n", nread); */
+  printf("Lendo entrada\n");
+  f = fopen(argv[1], "r");
+  nread = fread(data, sizeof(char), 300*1024*1024, f);
+  fclose(f);
+  printf("Bytes read: %d\n", nread);
   
   char *cipher = (char*)malloc(sizeof(char) * 300 * 1024 * 1024);
 
-  /* printf("Cifrando...\n"); */
-  /* clefia_cbc_128_enc(data, cipher, nread, iv_128, key_128); */
-  /* printf("Cifragem completa\n"); */
+  printf("Cifrando...\n");
+  clefia_cbc_128_enc(data, cipher, nread, iv_128, key_128);
+  printf("Cifragem completa\n");
 
-  /* printf("Salvando arquivo cifrado %s...\n", argv[2]);   */
-  /* f = fopen(argv[2], "w"); */
-  /* fwrite(cipher, sizeof(char), nread, f); */
-  /* fclose(f); */
-  /* printf("Arquivo salvo\n"); */
-
-  printf("Lendo arquivo cifrado\n");
-  f = fopen(argv[2], "r");
-  nread = fread(cipher, sizeof(char), 300*1024*1024, f);
-  fclose(f);
-
-  printf("Decifrando...\n");
-  clefia_cbc_128_dec(data, cipher, nread, iv_128, key_128);
-  printf("Decifragem completa\n");
-
-  printf("Salvando arquivo decifrado %s...\n", argv[2]);
-  f = fopen(argv[3], "w");
-  fwrite(data, sizeof(char), nread, f);
+  printf("Salvando arquivo cifrado %s...\n", argv[2]);
+  f = fopen(argv[2], "w");
+  fwrite(cipher, sizeof(char), nread, f);
   fclose(f);
   printf("Arquivo salvo\n");
+
+  /* printf("Lendo arquivo cifrado\n"); */
+  /* f = fopen(argv[2], "r"); */
+  /* nread = fread(cipher, sizeof(char), 300*1024*1024, f); */
+  /* fclose(f); */
+
+  /* printf("Decifrando...\n"); */
+  /* clefia_cbc_128_dec(data, cipher, nread, iv_128, key_128); */
+  /* printf("Decifragem completa\n"); */
+
+  /* printf("Salvando arquivo decifrado %s...\n", argv[2]); */
+  /* f = fopen(argv[3], "w"); */
+  /* fwrite(data, sizeof(char), nread, f); */
+  /* fclose(f); */
+  /* printf("Arquivo salvo\n"); */
   
   free(cipher);
   free(data);
