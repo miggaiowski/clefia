@@ -14,6 +14,8 @@
 #+LINK_HOME: 
 #+LATEX_HEADER: \usepackage{sbc-template}
 
+* Resumo
+  Pequeno texto
 * Introdução
 
   CLEFIA é um algoritmo de cifragem de blocos, desenvolvido pela SONY,
@@ -357,8 +359,103 @@
    
    | RK_{4i} \mid RK_{4i + 1} \mid RK_{4i + 2} \mid RK_{4i + 3} \leftarrow T |
 
+*** Valores Constantes
+    As tabelas de constantes encontram-se em anexo.
 
-*** Valores constantes
+* Modo de operação CBC
+
+ Como CLEFIA é um cifrador de blocos de comprimento fixo, no caso de
+ 128 bits, é necessário utilizar um modo de operação para que cifre
+ mensagens de qualquer comprimento. 
+
+ Como queriamos realizar testes cifrando mensagens longas, foi
+ necessário implementar um modo de operação. Optamos pelo CBC, devido
+ a sua simplicidade tanto para encriptar quanto para
+ desencriptar. Além disso, CBC é bastante utilizado, tendo inclusive
+ na biblioteca openSSL com o cifrador AES.
+
+ As imagens abaixo mostram como funcionam a encriptação e
+ desencriptação no modo CBC.
+
+ #+CAPTION:    Cifragem no modo CBC
+ #+ATTR_LaTeX: width=\textwidth
+ [[./Cbc_encryption.png]]
+
+#+CAPTION:    Decifragem no modo CBC
+ #+ATTR_LaTeX: width=\textwidth
+ [[./Cbc_decryption.png]]
+
+ Temos que IV representa um vetor aleatório de 128 bits que serve para
+ deixar cada mensagem única, mesmo sendo do mesmo texto.
+
+ Como podemos ver, cada bloco cifrado é utilizado para gerar o próximo
+ bloco. Logo, não é possível parelizar o CBC, sendo uma das suas
+ principais desvantagem.
+   
+* Resultados experimentais
+  Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
+  vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
+  nas tabelas abaixo. 
+  
+  É óbvio  que a  implementação do AES  da biblioteca OpenSSL  é muito
+  rápida,  já que o  código aberto  vem sendo  testado e  otimizado há
+  bastante tempo. 
+  
+  Nosso código, por outro lado,  foi escrito por duas pessoas apenas e
+  sem  o tempo  necessário para  fazer otimizações  mais  profundas no
+  código.  
+  
+  Apesar disso, a primeira implementação  era $10\%$ mais lenta. O que
+  fizemos para acelerar um pouco a execução foram
+  pequenas otimizações de código, como /loop unrolling/ de alguns
+  laços e trocar funções por  macros, que são substituídas em tempo de
+  compilação.  Acreditamos que com mais tempo e mais otimizações
+  poderíamos deminuir drasticamente os tempos apresentados.
+  
+  Nas tabelas a seguir, temos os tempos de execução de cada um dos dez
+  testes feitos.  O arquivo cifrado  é uma imagem de  uma distribuição
+  Linux, de 200278016 bytes.
+
+|---------------+-------------+----------------|
+| Cifrar        | AES-128 (s) | Clefia-128 (s) |
+|---------------+-------------+----------------|
+| Teste 1       |       1.996 |         31.778 |
+| Teste 2       |       1.933 |         31.783 |
+| Teste 3       |       2.030 |         31.773 |
+| Teste 4       |       1.933 |         31.782 |
+| Teste 5       |       2.026 |         31.782 |
+| Teste 6       |       2.059 |         31.786 |
+| Teste 7       |       2.078 |         31.791 |
+| Teste 8       |       2.124 |         31.785 |
+| Teste 9       |       1.948 |         31.904 |
+| Teste 10      |       1.981 |         31.775 |
+|---------------+-------------+----------------|
+| Média         |      2.0108 |        31.7939 |
+| Desvio Padrão |      0.0644 |         0.0390 |
+|---------------+-------------+----------------|
+
+|---------------+-------------+----------------|
+| Decifrar      | AES-128 (s) | Clefia-128 (s) |
+|---------------+-------------+----------------|
+| Teste 1       |       2.081 |         33.233 |
+| Teste 2       |       2.025 |         33.256 |
+| Teste 3       |       2.059 |         33.261 |
+| Teste 4       |       2.065 |         33.236 |
+| Teste 5       |       2.051 |         33.268 |
+| Teste 6       |       2.021 |         33.499 |
+| Teste 7       |       2.044 |          33.13 |
+| Teste 8       |       2.029 |         33.034 |
+| Teste 9       |       2.034 |         33.335 |
+| Teste 10      |       2.049 |         33.243 |
+|---------------+-------------+----------------|
+| Média         |      2.0458 |        33.2495 |
+| Desvio Padrão |      0.0191 |         0.1207 |
+|---------------+-------------+----------------|
+
+* Conclusão
+  Nosso algoritmo é mais lento.
+
+* Anexo: Valores constantes
 
     Abaixo temos as tabelas que representam os valores das constantes
     utilizadas, CON_128, CON_192 e CON_256.
@@ -496,94 +593,4 @@
    CON_256[i] 798c6324 15ad6dce 04cf99a2 68ee2eb3	  
    \end{verbatim}
 
-* Modo de operação CBC
-
- Como CLEFIA é um cifrador de blocos de comprimento fixo, no caso de
- 128 bits, é necessário utilizar um modo de operação para que cifre
- mensagens de qualquer comprimento. 
-
- Como queriamos realizar testes cifrando mensagens longas, foi
- necessário implementar um modo de operação. Optamos pelo CBC, devido
- a sua simplicidade tanto para encriptar quanto para
- desencriptar. Além disso, CBC é bastante utilizado, tendo inclusive
- na biblioteca openSSL com o cifrador AES.
-
- As imagens abaixo mostram como funcionam a encriptação e
- desencriptação no modo CBC.
-
-#+CAPTION:    The black-body emission of the disk around HR 4049
-     #+LABEL:      fig:SED-HR4049
-     #+ATTR_LaTeX: width=5cm,angle=90
- [[Cbc_encryption.png]]
-
-#+CAPTION:    The black-body emission of the disk around HR 4049
-     #+LABEL:      fig:SED-
-     #+ATTR_LaTeX: width=5cm,angle=90
- [[Cbc_Cbc_decryption.png]]
-
- Temos que IV representa um vetor aleatório de 128 bits que serve para
- deixar cada mensagem única, mesmo sendo do mesmo texto.
-
- Como podemos ver, cada bloco cifrado é utilizado para gerar o próximo
- bloco. Logo, não é possível parelizar o CBC, sendo uma das suas
- principais desvantagem.
    
-* Resultados experimentais
-  Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
-  vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
-  nas tabelas abaixo. 
-  
-  É óbvio  que a  implementação do AES  da biblioteca OpenSSL  é muito
-  rápida,  já que o  código aberto  vem sendo  testado e  otimizado há
-  bastante tempo. 
-  
-  Nosso código, por outro lado,  foi escrito por duas pessoas apenas e
-  sem  o tempo  necessário para  fazer otimizações  mais  profundas no
-  código.  
-  
-  Apesar disso, a primeira implementação  era $10\%$ mais lenta. O que
-  fizemos para acelerar um pouco a execução foram
-  pequenas otimizações de código, como /loop unrolling/ de alguns
-  laços e trocar funções por  macros, que são substituídas em tempo de
-  compilação.  Acreditamos que com mais tempo e mais otimizações
-  poderíamos deminuir drasticamente os tempos apresentados.
-  
-  Nas tabelas a seguir, temos os tempos de execução de cada um dos dez
-  testes feitos.  O arquivo cifrado  é uma imagem de  uma distribuição
-  Linux, de 200278016 bytes.
-
-|---------------+-------------+----------------|
-| Cifrar        | AES-128 (s) | Clefia-128 (s) |
-|---------------+-------------+----------------|
-| Teste 1       |       1.996 |         31.778 |
-| Teste 2       |       1.933 |         31.783 |
-| Teste 3       |       2.030 |         31.773 |
-| Teste 4       |       1.933 |         31.782 |
-| Teste 5       |       2.026 |         31.782 |
-| Teste 6       |       2.059 |         31.786 |
-| Teste 7       |       2.078 |         31.791 |
-| Teste 8       |       2.124 |         31.785 |
-| Teste 9       |       1.948 |         31.904 |
-| Teste 10      |       1.981 |         31.775 |
-|---------------+-------------+----------------|
-| Média         |      2.0108 |        31.7939 |
-| Desvio Padrão |      0.0644 |         0.0390 |
-|---------------+-------------+----------------|
-
-|---------------+-------------+----------------|
-| Decifrar      | AES-128 (s) | Clefia-128 (s) |
-|---------------+-------------+----------------|
-| Teste 1       |       2.081 |         33.233 |
-| Teste 2       |       2.025 |         33.256 |
-| Teste 3       |       2.059 |         33.261 |
-| Teste 4       |       2.065 |         33.236 |
-| Teste 5       |       2.051 |         33.268 |
-| Teste 6       |       2.021 |         33.499 |
-| Teste 7       |       2.044 |          33.13 |
-| Teste 8       |       2.029 |         33.034 |
-| Teste 9       |       2.034 |         33.335 |
-| Teste 10      |       2.049 |         33.243 |
-|---------------+-------------+----------------|
-| Média         |      2.0458 |        33.2495 |
-| Desvio Padrão |      0.0191 |         0.1207 |
-|---------------+-------------+----------------|
