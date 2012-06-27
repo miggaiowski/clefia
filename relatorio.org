@@ -48,7 +48,9 @@
   CLEFIA, tanto para a parte de geração de chaves, quanto para a parte
   de encriptar e desencriptar.
 
-** Generalized Feistel Network
+** Blocos do CLEFIA
+
+*** Generalized Feistel Network
     
     CLEFIA utiliza  um 4-branch e  um 8-branch do  Generalized Feistel
     Network(GFN). O  4-branch é utilizado  nas funções de  encriptar e
@@ -123,7 +125,7 @@
 
 
    
-** Funções F
+*** Funções F
 
     Já vimos que tanto o 4-branch GFN quanto o 8-branch GNF, utiliza
     duas funções F, denominadas F0 e F1. Abaixo, iremos descrevê-las.
@@ -165,7 +167,7 @@
 
     Ambas as funções utilizam as S-boxes que serão mostradas abaixo.
 
-** S-boxes
+*** S-boxes
 
    CLEFIA utiliza dois tipos diferentes de S-box, S0 e S1. As tabelas
    abaixo mostram-nas. Temos que todos os valores estão em
@@ -216,7 +218,7 @@
    f. f7 e4 79 96 a2 fc 6d b2 6b 03 e1 2e 7d 14 95 1d
    \end{verbatim}
 
-** Matrizes de Difusão
+*** Matrizes de Difusão
 
     Vimos que é necessário a multiplicação de um vetor T pelas
     matrizes M0 e M1 na função F0 e F1 respectivamente.
@@ -244,7 +246,7 @@
 ** Algoritmo de encriptação
 
    Abaixo temos o algoritmo de encriptação do CLEFIA. A diferença
-   entre tamanho de chaves diferentes é apenas o número de rounds
+   entre os tamanho de chaves diferentes é apenas o número de rounds
    feitos no GFN. Temos que o número de rounds são: 18, 22, e 26 para
    128, 192 e 256 bits respectivamente. Isso implica que o total de
    rounds keys seja 36, 44 e 52, já que para cada round são
@@ -272,7 +274,70 @@
 
 ** Algoritmo de desencriptação
 
+   Abaixo é apresentado o algoritmo de desencriptação. Temos também
+   que a diferença entre os possíveis tamanhos de chaves será apenas no número
+   de rounds feitos no GFN.
+
+   Entrada: bloco cifrado : C = \{C_0, C_1, C_2, C_3\}, P_i tem 32 bits
+            numero de rounds : r tem 32 bits
+	    rounds keys : RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits
+	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
+            WK_i tem 32 bits
+   Saída: bloco plain : P = \{P_0, P_1, P_2, P_3\}, C_i tem 32 bits   
    
+   Step 1. T0 | T1 | T2 | T3 <- C0 | (C1 XOR WK2) | C2 | (C3 XOR WK3)
+
+      Step 2. T0 | T1 | T2 | T3
+                 <- GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, T0, T1, T2, T3)
+
+      Step 3. P0 | P1 | P2 | P3 <- T0 | (T1 XOR WK0) | T2 | (T3 XOR
+      WK1)
+
+
+      Podemos observar a simetria com o algoritmo de encriptação,
+      mudando apenas WK_0 e WK_1 com WK_2 e WK_3. Além disso, é usado
+      o inverso do GFN de 4-branch.
+   
+** Geração das chaves
+
+   Nessa seção apresentaremos como são geradas as rounds keys e
+   whitening keys usadas para encriptar e desencriptar. 
+
+   Essas chaves são geradas a partir da chave k, com os seguintes
+   passos:
+1. Gera L a partir de K
+2. Expande K e L, gerando WK e RK
+
+   Para gerar L a partir de K, é usado um 4-branch GFN com 12 rounds se
+   k for de 128 bits, ou é usado um 8-branch GFN com 10 rounds se k
+   for de 192 ou 256 bits.
+
+
+* Modo de operação CBC
+
+ Como CLEFIA é um cifrador de blocos de comprimento fixo, no caso de
+ 128 bits, é necessário utilizar um modo de operação para que cifre
+ mensagens de qualquer comprimento. 
+
+ Como queriamos realizar testes cifrando mensagens longas, foi
+ necessário implementar um modo de operação. Optamos pelo CBC, devido
+ a sua simplicidade tanto para encriptar quanto para
+ desencriptar. Além disso, CBC é bastante utilizado, tendo inclusive
+ na biblioteca openSSL com o cifrador AES.
+
+ As imagens abaixo mostram como funcionam a encriptação e
+ desencriptação no modo CBC.
+
+ [[Cbc_encryption.png]]
+
+ [[Cbc_Cbc_decryption.png]]
+
+ Temos que IV representa um vetor aleatório de 128 bits que serve para
+ deixar cada mensagem única, mesmo sendo do mesmo texto.
+
+ Como podemos ver, cada bloco cifrado é utilizado para gerar o próximo
+ bloco. Logo, não é possível parelizar o CBC, sendo uma das suas
+ principais desvantagem.
    
 * Resultados experimentais
   Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
