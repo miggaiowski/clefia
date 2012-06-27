@@ -12,6 +12,7 @@
 #+EXPORT_EXCLUDE_TAGS: noexport
 #+LINK_UP:   
 #+LINK_HOME: 
+#+LATEX_HEADER: \usepackage{sbc-template}
 
 * Introdução
 
@@ -62,7 +63,7 @@
 
    *GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)*
 
-   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{2r-1},
+   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{2r-1}, \\
                32-bit data X_0, X_1, X_2, X_3,
 
 
@@ -77,11 +78,11 @@
 
    *Passo 2.2.* T_0 | T_1 | T_2 | T_3 \leftarrow T_1 | T_2 | T_3 | T_0
 
-   *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 \leftarrow T_3 | T_0 | T_1 | T_2 \\
+   *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 \leftarrow T_3 | T_0 | T_1 | T_2 
 
    *GFN_{8,r}(RK_{0}, ..., RK_{4r-1}, X_0, X_1, ..., X_7)*
 
-   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{4r-1},
+   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{4r-1}, \\
                32-bit data X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7,
 
    *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3, Y_4, Y_5, Y_6, Y_7
@@ -89,9 +90,9 @@
    *Passo 1.* T_0 | T_1 | ... | T_7 \leftarrow X_0 | X_1 | ... | X_7
 
    *Passo 2.* Para i = 0 até $r-1$ faça:
-   *Passo 2.1.* T_1 \leftarrow T_1 \oplus F0(RK_{4i}, T_0),
-                T_3 \leftarrow T_3 \oplus F1(RK_{4i + 1}, T_2),
-                T_5 \leftarrow T_5 \oplus F0(RK_{4i + 2}, T_4),
+   *Passo 2.1.* T_1 \leftarrow T_1 \oplus F0(RK_{4i}, T_0), \\
+                T_3 \leftarrow T_3 \oplus F1(RK_{4i + 1}, T_2), \\
+                T_5 \leftarrow T_5 \oplus F0(RK_{4i + 2}, T_4), \\
                 T_7 \leftarrow T_7 \oplus F1(RK_{4i + 3}, T_6)
 
    *Passo 2.2.* T_0 | T_1 | ... | T_6 | T_7 \leftarrow T_1 | T_2 | ... | T_7 | T_0
@@ -102,23 +103,23 @@
    Temos também a necessidade de gerar a inversa da GFN_{4, r} para
    que seja usada na função de decriptar. Abaixo, ela é apresentada
 
-     GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)
+   *GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)*
 
-         input : 32-bit round keys RK_{0}, ..., RK_{2r-1},
-                 32-bit data X_0, X_1, X_2, X_3,
+   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{2r-1}, \\
+               32-bit data X_0, X_1, X_2, X_3,
 
-         output: 32-bit data Y_0, Y_1, Y_2, Y_3
+   *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3
 
-      *Passo 1.* T_0 | T_1 | T_2 | T_3 <- X_0 | X_1 | X_2 | X_3
+   *Passo 1.* T_0 | T_1 | T_2 | T_3 <- X_0 | X_1 | X_2 | X_3
 
-      *Passo 2.* Para i = 0 até $r-1$ faça: 
+   *Passo 2.* Para i = 0 até $r-1$ faça: 
 
-         *Passo 2.1.* T_1 <- T_1 \oplus F0(RK_{2(r - i) - 2}, T_0),
-                   T_3 <- T_3 \oplus F1(RK_{2(r - i) - 1}, T_2)
+   *Passo 2.1.* T_1 <- T_1 \oplus F0(RK_{2(r - i) - 2}, T_0),
+   T_3 <- T_3 \oplus F1(RK_{2(r - i) - 1}, T_2)
 
-         *Passo 2.2.* T_0 | T_1 | T_2 | T_3 <- T_3 | T_0 | T_1 | T_2
+   *Passo 2.2.* T_0 | T_1 | T_2 | T_3 <- T_3 | T_0 | T_1 | T_2
 
-      *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 <- T_1 | T_2 | T_3 | T_0
+   *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 <- T_1 | T_2 | T_3 | T_0
 
 
    
@@ -128,41 +129,41 @@
     duas funções F, denominadas F0 e F1. Abaixo, iremos descrevê-las.
 
      
-    F0(RK, x)
+    *F0(RK, x)*
 
-         input : 32-bit round key RK, 32-bit data x,
+    *Entrada* : 32-bit round key RK, 32-bit data x,
 
-         output: 32-bit data y
+    *Saída*: 32-bit data y
 
-      Step 1. T <- RK XOR x
+    *Passo 1.* T <- RK XOR x
 
-      Step 2. Let T = T0 | T1 | T2 | T3, where Ti is 8-bit data,
-              T0 <- S0(T0),
-              T1 <- S1(T1),
-              T2 <- S0(T2),
-              T3 <- S1(T3)
+    *Passo 2.* Let T = T_0 | T_1 | T_2 | T_3, where Ti is 8-bit data, \\
+               T_0 <- S0(T_0), \\
+               T_1 <- S1(T_1), \\
+               T_2 <- S0(T_2), \\
+               T_3 <- S1(T_3)
 
-      Step 3. Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
-              y <- M0 trans((T0, T1, T2, T3))
+    *Passo 3.* Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
+               y <- M0 trans((T_0, T_1, T_2, T_3))
 
-   F1(RK, x)
+    *F1(RK, x)*
 
-         input : 32-bit round key RK, 32-bit data x,
+    *Entrada* : 32-bit round key RK, 32-bit data x,
 
-         output: 32-bit data y
+    *Saída*: 32-bit data y
 
-      Step 1. T <- RK XOR x
+    *Passo 1.* T <- RK XOR x
 
-      Step 2. Let T = T0 | T1 | T2 | T3, where Ti is 8-bit data,
-              T0 <- S1(T0),
-              T1 <- S0(T1),
-              T2 <- S1(T2),
-              T3 <- S0(T3)
+    *Passo 2.* Let T = T_0 | T_1 | T_2 | T_3, where Ti is 8-bit data,
+               T_0 <- S1(T_0),
+               T_1 <- S0(T_1),
+               T_2 <- S1(T_2),
+               T_3 <- S0(T_3)
 
-      Step 3. Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
-              y <- M1 trans((T0, T1, T2, T3))
+    *Passo 3.* Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
+               y <- M1 trans((T_0, T_1, T_2, T_3))
 
-  Ambas as funções utilizam as S-boxes que serão mostradas abaixo.
+    Ambas as funções utilizam as S-boxes que serão mostradas abaixo.
 
 ** S-boxes
 
@@ -172,8 +173,9 @@
    gerada a partir da posição (i, j), onde i é formada pelos 4
    primeiros bits e j pelos 4 últimos.
 
-       Table 1: S-Box S0
+       Tabela 1: S-Box S0
 
+   \begin{verbatim}
       .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
    0. 57 49 d1 c6 2f 33 74 fb 95 6d 82 ea 0e b0 a8 1c
    1. 28 d0 4b 92 5c ee 85 b1 c4 0a 76 3d 63 f9 17 af
@@ -191,9 +193,10 @@
    d. 6e 84 72 bb 0d 18 d9 96 f0 5f 41 ac 27 c5 e3 3a
    e. 81 6f 07 a3 79 f6 2d 38 1a 44 5e b5 d2 ec cb 90
    f. 9a 36 e5 29 c3 4f ab 64 51 f8 10 d7 bc 02 7d 8e
+   \end{verbatim}
+   Tabela 2: S-Box S1
 
-   Table 2: S-Box S1
-
+   \begin{verbatim}
       .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
    0. 6c da c3 e9 4e 9d 0a 3d b8 36 b4 38 13 34 0c d9
    1. bf 74 94 8f b7 9c e5 dc 9e 07 49 4f 98 2c b0 93
@@ -211,6 +214,7 @@
    d. f8 5f ab f1 1b 42 81 d6 be 44 29 a6 57 b9 af f2
    e. d4 75 66 bb 68 9f 50 02 01 3c 7f 8d 1a 88 bd ac
    f. f7 e4 79 96 a2 fc 6d b2 6b 03 e1 2e 7d 14 95 1d
+   \end{verbatim}
 
 ** Matrizes de Difusão
 
@@ -219,19 +223,19 @@
 
     Abaixo é mostrado como é feito essa multiplicação.
 
-   y = M0 trans((T0, T1, T2, T3)):
+   y = M0 trans((T_0, T_1, T_2, T_3)):
 
-     y0 =         T0  XOR (0x02 * T1) XOR (0x04 * T2) XOR (0x06 * T3),
-     y1 = (0x02 * T0) XOR         T1  XOR (0x06 * T2) XOR (0x04 * T3),
-     y2 = (0x04 * T0) XOR (0x06 * T1) XOR         T2  XOR (0x02 * T3),
-     y3 = (0x06 * T0) XOR (0x04 * T1) XOR (0x02 * T2) XOR         T3
+     y0 =         T_0  XOR (0x02 * T_1) XOR (0x04 * T_2) XOR (0x06 * T_3),
+     y1 = (0x02 * T_0) XOR         T_1  XOR (0x06 * T_2) XOR (0x04 * T_3),
+     y2 = (0x04 * T_0) XOR (0x06 * T_1) XOR         T_2  XOR (0x02 * T_3),
+     y3 = (0x06 * T_0) XOR (0x04 * T_1) XOR (0x02 * T_2) XOR         T_3
 
-   y = M1 trans((T0, T1, T2, T3)):
+   y = M1 trans((T_0, T_1, T_2, T_3)):
 
-     y0 =         T0  XOR (0x08 * T1) XOR (0x02 * T2) XOR (0x0a * T3),
-     y1 = (0x08 * T0) XOR         T1  XOR (0x0a * T2) XOR (0x02 * T3),
-     y2 = (0x02 * T0) XOR (0x0a * T1) XOR         T2  XOR (0x08 * T3),
-     y3 = (0x0a * T0) XOR (0x02 * T1) XOR (0x08 * T2) XOR         T3
+     y0 =         T_0  XOR (0x08 * T_1) XOR (0x02 * T_2) XOR (0x0a * T_3),
+     y1 = (0x08 * T_0) XOR         T_1  XOR (0x0a * T_2) XOR (0x02 * T_3),
+     y2 = (0x02 * T_0) XOR (0x0a * T_1) XOR         T_2  XOR (0x08 * T_3),
+     y3 = (0x0a * T_0) XOR (0x02 * T_1) XOR (0x08 * T_2) XOR         T_3
 
      Temos que o sinal * indica multiplicação em GF(2^8) onde o
      polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1. Teremos uma
