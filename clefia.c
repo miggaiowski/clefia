@@ -77,7 +77,7 @@ unsigned int con_128[60] = {
    0x7adf6582, 0x16fe3ecd, 0xd17e32c1, 0xbd5f9f66,
    0x50b63150, 0x3c9757e7, 0x1052b098, 0x7c73b3a7
 };
-
+   
 unsigned int con_192[84] = {
 	0xc6d61d91, 0xaaf73771, 0x5b6226f8, 0x374383ec,
 	0x15b8bb4c, 0x799959a2, 0x32d5f596, 0x5ef43485,
@@ -496,6 +496,7 @@ void encryption_128(unsigned int *p, unsigned int *c, unsigned int *wk, unsigned
 
   unsigned int t[4];
   unsigned int y[4];
+
 	
   /* step 1 */
   t[0] = p[0];
@@ -629,7 +630,7 @@ void clefia_cbc_128_enc(char* plain, char * cipher, int length, unsigned int* iv
 		i = i + 16;		
 	}
 }
-	
+
 /* Retorna 1 se vetores são iguais, 0 c.c. */
 int equal(unsigned int* a, unsigned int* b, unsigned int size) {
   int i;
@@ -665,6 +666,7 @@ int main() {
                                0x0c0d0e0f};
   unsigned int ciphertext_192[4] = {0xe2482f64, 0x9f028dc4, 0x80dda184, 0xfde181ad};            
                      
+
   unsigned int encrypted[4];
   unsigned int decrypted[4];
   
