@@ -37,7 +37,7 @@
   realizados  com o  cifrador AES  também no  modo CBC,  disponível na
   biblioteca   OpenSSL.  Dessa   forma,  foi   possível   comparar  os
   resultados.
-
+  
 * Algoritmo CLEFIA
 
   O algoritmo CLEFIA consiste em  duas partes, a de geração de chaves,
@@ -289,8 +289,8 @@
 
    For 128-bit data X,
 
-   Y = Sigma(X)
-     = X[7-63] | X[121-127] | X[0-6] | X[64-120]
+   | Y | = | Sigma(X)                                           |
+   |   | = | X[7-63] \mid X[121-127] \mid X[0-6] \mid X[64-120] |
 
      Temos que X[a-b] denota os bits entre a e b
      inclusive. Consideramos sempre o bit 0 como sendo o mais
@@ -302,76 +302,60 @@
     keys para um chave de 128 bits. Os valores do vetor de constante
     CON_128 é especificado numa tabela ao final dessa seção.
     
-    Entrada: chave : K = \{k_0, k_1, K_2, k_3}, k_i tem 32 bits
-    Saida:  rounds keys : RK = \{RK_{0}, ..., RK_{35}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+   | *Entrada*: | chave :          | K = \{k_0, k_1, K_2, k_3}, k_i tem 32 bits                  |
+   | *Saida*:   | rounds keys :    | RK = \{RK_{0}, ..., RK_{35}\}, RK_i tem 32 bits             |
+   |            | whitening keys : | WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},   WK_i tem 32 bits |
 
-    (Generating L from K)
-
-      Step 1. L <- GFN_{4,12}(CON_128[0], ..., CON_128[23], K0, ..., K3)
-
-   (Expanding K and L)
-
-      Step 2. WK0 | WK1 | WK2 | WK3 <- K
-
-      Step 3. For i = 0 to 8 do the following:
-           T <- L XOR (CON_128[24 + 4i] | CON_128[24 + 4i + 1]
-                         | CON_128[24 + 4i + 2] | CON_128[24 + 4i + 3])
-           L <- Sigma(L)
-           if i is odd: T <- T XOR K
-           RK_{4i} | RK_{4i + 1} | RK_{4i + 2} | RK_{4i + 3} <- T
+    | *Passo 1.* | L \leftarrow GFN_{4,12}(CON_128[0], ..., CON_128[23], K0, ..., K3)                                                     |
+    | *Passo 2.* | WK0 \mid WK1 \mid WK2 \mid WK3 \leftarrow K                                                                            |
+    | *Passo 3.* | For i = 0 to 8 do the following:                                                                               |
+    |            | T \leftarrow L \oplus (CON_128[24 + 4i] \mid CON_128[24 + 4i + 1] \mid CON_128[24 + 4i + 2] \mid CON_128[24 + 4i + 3]) |
+    |            | L \leftarrow Sigma(L)                                                                                                  |
+    |            | if i is odd: T \leftarrow T \oplus K                                                                                   |
+    |            | RK_{4i} \mid RK_{4i + 1} \mid RK_{4i + 2} \mid RK_{4i + 3} \leftarrow T                                                |
 
 *** Geração de chaves para o modo 192 e 256 bits
 
     Abaixo temos o algoritmo para o modo 192 e 256 bits. Podemos ver
     que eles são bem parecidos entre si.
 
-    Entrada para K = 192: chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5}, k_i tem 32 bits
-    Saida para K = 192:  rounds keys : RK = \{RK_{0}, ..., RK_{43}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+    | *Entrada para K = 192*: | chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5}, k_i tem 32 bits                       |
+    | *Saida para K = 192*:   | rounds keys : RK = \{RK_{0}, ..., RK_{43}\}, RK_i tem 32 bits                      |
+    |                         | whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},         WK_i tem 32 bits |
 
-   Entrada para K = 256: chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5,
-    k_6, k_7}, k_i tem 32 bits
-    Saida para k = 256:  rounds keys : RK = \{RK_{0}, ..., RK_{51}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+    | *Entrada para K = 256*: | chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5, k_6, k_7}, k_i tem 32 bits      |
+    | *Saida para k = 256*: | rounds keys : RK = \{RK_{0}, ..., RK_{51}\}, RK_i tem 32 bits               |
+    |                       | whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},  WK_i tem 32 bits |
 
-     (Generating LL,LR from KL,KR for a k-bit key)
+    (Generating LL,LR from KL,KR for a k-bit key)
 
-      Step 1. Set k = 192 or k = 256
+    | *Passo 1.* | k = 192 ou k = 256 |                                                                                                        |
+    | *Passo 2.* | If k = 192:        |                                                                                                        |
+    |            |                    | KL \leftarrow K0 \mid K1 \mid K2 \mid K3, KR \leftarrow K4 \mid K5 \mid \thicksim K0 \mid \thicksim K1 |
+    |            | else if k = 256 :  |                                                                                                        |
+    |            |                    | KL \leftarrow K0 \mid K1 \mid K2 \mid K3, KR \leftarrow K4 \mid K5 \mid K6 \mid K7                     |
 
-      Step 2. If k = 192   :
-                     KL <- K0 | K1 | K2 | K3, KR <- K4 | K5 | ~K0 | ~K1
-              else if k = 256 :
-                     KL <- K0 | K1 | K2 | K3, KR <- K4 | K5 | K6 | K7
-
-      Step 3. Let KL = KL0 | KL1 | KL2 | KL3
-                  KR = KR0 | KR1 | KR2 | KR3
-                  LL|LR <-
-                  GFN_{8,10}(CON_k[0] , ..., CON_k[39],
-                                    KL0, ..., KL3, KR0, ..., KR3)
+    | *Passo 3.* | Let KL = KL0 \mid KL1 \mid KL2 \mid KL3                                                   |   |
+    |            | KR = KR0 \mid KR1 \mid KR2 \mid KR3                                                       |   |
+    |            | LL \mid LR \leftarrow GFN_{8,10}(CON_k[0] , ..., CON_k[39], KL0, ..., KL3, KR0, ..., KR3) |   |
 
    (Expanding KL,KR and LL,LR for a k-bit key)
 
-      Step 4. WK0 | WK1 | WK2 | WK3 <- KL XOR KR
+   | *Passo 4.* | WK0 \mid WK1 \mid WK2 \mid WK3 \leftarrow KL \oplus KR |
 
-      Step 5. For i = 0 to 10 (if k = 192),
-                               or 12 (if k = 256) do the following:
-
-                  If (i mod 4) = 0 or 1:
-                      T <- LL XOR (CON_k[40 + 4i] | CON_k[40 + 4i + 1]
-                              | CON_k[40 + 4i + 2] | CON_k[40 + 4i + 3])
-                      LL <- Sigma(LL)
-                      if i is odd: T <- T XOR KR
-                  else:
-                      T <- LR XOR (CON_k[40 + 4i] | CON_k[40 + 4i + 1]
-                              | CON_k[40 + 4i + 2] | CON_k[40 + 4i + 3])
-                      LR <- Sigma(LR)
-                      if i is odd: T <- T XOR KL
-
-                  RK_{4i} | RK_{4i + 1} | RK_{4i + 2} | RK_{4i + 3} <- T
+   | *Passo 5.* | For i = 0 to 10 (if k = 192),                                                                                         |
+   |            | or 12 (if k = 256) do the following:                                                                                  |
+   |            | If (i mod 4) = 0 or 1:                                                                                                |
+   |            | \quad T \leftarrow LL \oplus (CON_k[40 + 4i] \mid CON_k[40 + 4i + 1] \mid CON_k[40 + 4i + 2] \mid CON_k[40 + 4i + 3]) |
+   |            | \quad LL \leftarrow Sigma(LL)                                                                                         |
+   |            | if i is odd:                                                                                                          |
+   |            | \quad T \leftarrow T \oplus KR                                                                                        |
+   |            | else:                                                                                                                 |
+   |            | \quad T \leftarrow LR \oplus (CON_k[40 + 4i] \mid CON_k[40 + 4i + 1] \mid CON_k[40 + 4i + 2] \mid CON_k[40 + 4i + 3]) |
+   |            | \quad LR \leftarrow Sigma(LR)                                                                                         |
+   |            | if i is odd: T \leftarrow T \oplus KL                                                                                 |
+   
+   | RK_{4i} \mid RK_{4i + 1} \mid RK_{4i + 2} \mid RK_{4i + 3} \leftarrow T |
 
 
 *** Valores constantes
@@ -381,6 +365,7 @@
 
    Table 7: CON_128[i] (0 <= i < 60)
 
+   \begin{verbatim}
       i           0        1        2        3
    CON_128[i] f56b7aeb 994a8a42 96a4bd75 fa854521
       i           4        5        6        7
@@ -411,9 +396,11 @@
    CON_128[i] 7adf6582 16fe3ecd d17e32c1 bd5f9f66
       i          56       57       58       59
    CON_128[i] 50b63150 3c9757e7 1052b098 7c73b3a7
+   \end{verbatim}
 
    Table 8: CON_192[i] (0 <= i < 84)
 
+   \begin{verbatim}
       i           0        1        2        3
    CON_192[i] c6d61d91 aaf73771 5b6226f8 374383ec
       i           4        5        6        7
@@ -456,9 +443,11 @@
    CON_192[i] a2f6d5d1 ced71715 697242d8 055393de
       i          80       81       82       83
    CON_192[i] 0cb0895c 609151bb 3e51ec9e 5270b089
+   \end{verbatim}
 
    Table 9: CON_256[i] (0 <= i < 92)
 
+   \begin{verbatim}
       i          0        1        2        3
    CON_256[i] 0221947e 6e00c0b5 ed014a3f 8120e05a
       i          4        5        6        7
@@ -505,7 +494,7 @@
    CON_256[i] de372c53 b216d669 830a9629 ef2beb34
       i         88       89       90       91
    CON_256[i] 798c6324 15ad6dce 04cf99a2 68ee2eb3	  
-
+   \end{verbatim}
 
 * Modo de operação CBC
 
