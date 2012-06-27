@@ -1,0 +1,69 @@
+#+TITLE:     Relatório Trabalho de Introdução a Criptografia
+#+AUTHOR:    Miguel Gaiowski e Douglas Santos
+#+EMAIL:     bla
+#+DATE:      2012-06-27 Wed
+#+DESCRIPTION: 
+#+KEYWORDS: 
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:nil skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME: 
+
+* Resultados experimentais
+  Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
+  vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
+  nas tabelas abaixo. 
+  É óbvio  que a  implementação do AES  da biblioteca OpenSSL  é muito
+  rápida,  já que o  código aberto  vem sendo  testado e  otimizado há
+  bastante tempo. 
+  Nosso código, por outro lado,  foi escrito por duas pessoas apenas e
+  sem  o tempo  necessário para  fazer otimizações  mais  profundas no
+  código.  
+  Apesar  disso, a  primeira  implementação  era $10\%$  mais
+  lenta.  O  que fizemos  para  acelerar  um  pouco a  execução  foram
+  pequenas  otimizações de  código,  como /loop  unrolling/ de  alguns
+  laços e trocar funções por  macros, que são substituídas em tempo de
+  compilação.  Acreditamos  que  com  mais tempo  e  mais  otimizações
+  poderíamos deminuir drasticamente os tempos apresentados.
+
+
+|--------+-------------+----------------|
+| Cifrar | AES-128 (s) | Clefia-128 (s) |
+|--------+-------------+----------------|
+| t1     |       1.996 |         31.778 |
+| t2     |       1.933 |         31.783 |
+| t3     |       2.030 |         31.773 |
+| t4     |       1.933 |         31.782 |
+| t5     |       2.026 |         31.782 |
+| t6     |       2.059 |         31.786 |
+| t7     |       2.078 |         31.791 |
+| t8     |       2.124 |         31.785 |
+| t9     |       1.948 |         31.904 |
+| t10    |       1.981 |         31.775 |
+|--------+-------------+----------------|
+| AVG    |      2.0108 |        31.7939 |
+| STDEV  |      0.0644 |         0.0390 |
+|--------+-------------+----------------|
+
+|----------+-------------+----------------|
+| Decifrar | AES-128 (s) | Clefia-128 (s) |
+|----------+-------------+----------------|
+| t1       |       2.081 |         33.233 |
+| t2       |       2.025 |         33.256 |
+| t3       |       2.059 |         33.261 |
+| t4       |       2.065 |         33.236 |
+| t5       |       2.051 |         33.268 |
+| t6       |       2.021 |         33.499 |
+| t7       |       2.044 |          33.13 |
+| t8       |       2.029 |         33.034 |
+| t9       |       2.034 |         33.335 |
+| t10      |       2.049 |         33.243 |
+|----------+-------------+----------------|
+| AVG      |      2.0458 |        33.2495 |
+| STDEV    |      0.0191 |         0.1207 |
+|----------+-------------+----------------|
+
