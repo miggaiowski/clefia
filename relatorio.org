@@ -89,7 +89,6 @@
    *Passo 1.* T_0 | T_1 | ... | T_7 \leftarrow X_0 | X_1 | ... | X_7
 
    *Passo 2.* Para i = 0 até $r-1$ faça:
-
    *Passo 2.1.* T_1 \leftarrow T_1 \oplus F0(RK_{4i}, T_0),
                 T_3 \leftarrow T_3 \oplus F1(RK_{4i + 1}, T_2),
                 T_5 \leftarrow T_5 \oplus F0(RK_{4i + 2}, T_4),
@@ -240,9 +239,37 @@
 
 ** Algoritmo de encriptação
 
+   Abaixo temos o algoritmo de encriptação do CLEFIA. A diferença
+   entre tamanho de chaves diferentes é apenas o número de rounds
+   feitos no GFN. Temos que o número de rounds são: 18, 22, e 26 para
+   128, 192 e 256 bits respectivamente. Isso implica que o total de
+   rounds keys seja 36, 44 e 52, já que para cada round são
+   necessários duas rounds keys.
+
+   Entrada: bloco plain : P = \{P_0, P_1, P_2, P_3\}, P_i tem 32 bits
+            numero de rounds : r tem 32 bits
+	    rounds keys : RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits
+	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
+            WK_i tem 32 bits
+   Saída: bloco cifrado : C = \{C_0, C_1, C_2, C_3\}, C_i tem 32 bits
+
+   Step 1. T0 | T1 | T2 | T3 <- P0 | (P1 XOR WK0) | P2 | (P3 XOR WK1)
+
+      Step 2. T0 | T1 | T2 | T3
+                    <- GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, T0, T1, T2, T3)
+
+      Step 3. C0 | C1 | C2 | C3 <- T0 | (T1 XOR WK2) | T2 | (T3 XOR
+      WK3)
+
+      
+     As 4 whitening keys e as 2r rounds keys são geradas a partir da
+     chave k. Esse processo será mostrado numa seção mais abaixo.
+
 
 ** Algoritmo de desencriptação
 
+   
+   
 * Resultados experimentais
   Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
   vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
@@ -302,6 +329,3 @@
 | Média         |      2.0458 |        33.2495 |
 | Desvio Padrão |      0.0191 |         0.1207 |
 |---------------+-------------+----------------|
-
-  
-=======
