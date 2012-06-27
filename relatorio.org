@@ -63,44 +63,33 @@
    $GFN_{8,  r}$. Note  que ambos  utilizam as  funções $F$  que serão
    mostradas na próxima subseção. \\
 
-   *GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)*
+   | *GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)*  |
 
-   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{2r-1}, \\
-               32-bit data X_0, X_1, X_2, X_3,
+   | *Entrada*: | 32-bit round keys | RK_{0}, ..., RK_{2r-1} |
+   |            | 32-bit data       | X_0, X_1, X_2, X_3     |
+   | *Saída*:   | 32-bit data       | Y_0, Y_1, Y_2, Y_3     |
 
+   | *Passo 1.*   | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow X_0 \mid X_1 \mid X_2 \mid X_3 |
+   | *Passo 2.*   | Para i = 0 até $r-1$ faça:                                               |
+   | *Passo 2.1.* | T_1 \leftarrow T_1 \oplus F0(RK_{2i},T_0),                               |
+   |              | T_3 \leftarrow T_3 \oplus F1(RK_{2i + 1}, T_2)                           |
+   | *Passo 2.2.* | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow T_1 \mid T_2 \mid T_3 \mid T_0 |
+   | *Passo 3.*   | Y_0 \mid Y_1 \mid Y_2 \mid Y_3 \leftarrow T_3 \mid T_0 \mid T_1 \mid T_2 |
 
-   *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3
+   | *GFN_{8,r}(RK_{0}, ..., RK_{4r-1}, X_0, X_1, ..., X_7)* |
 
-   *Passo 1.* T_0 | T_1 | T_2 | T_3 \leftarrow X_0 | X_1 | X_2 | X_3
+   | *Entrada* : | 32-bit round keys | RK_{0}, ..., RK_{4r-1},                 |
+   |             | 32-bit data       | X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7, |
+   | *Saída*:    | 32-bit data       | Y_0, Y_1, Y_2, Y_3, Y_4, Y_5, Y_6, Y_7  |
 
-   *Passo 2.* Para i = 0 até $r-1$ faça:
-
-   *Passo 2.1.* T_1 \leftarrow T_1 \oplus F0(RK_{2i},T_0),
-                T_3 \leftarrow T_3 \oplus F1(RK_{2i + 1}, T_2)
-
-   *Passo 2.2.* T_0 | T_1 | T_2 | T_3 \leftarrow T_1 | T_2 | T_3 | T_0
-
-   *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 \leftarrow T_3 | T_0 | T_1 | T_2 
-
-   *GFN_{8,r}(RK_{0}, ..., RK_{4r-1}, X_0, X_1, ..., X_7)*
-
-   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{4r-1}, \\
-               32-bit data X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7,
-
-   *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3, Y_4, Y_5, Y_6, Y_7
-
-   *Passo 1.* T_0 | T_1 | ... | T_7 \leftarrow X_0 | X_1 | ... | X_7
-
-   *Passo 2.* Para i = 0 até $r-1$ faça:
-   *Passo 2.1.* T_1 \leftarrow T_1 \oplus F0(RK_{4i}, T_0), \\
-                T_3 \leftarrow T_3 \oplus F1(RK_{4i + 1}, T_2), \\
-                T_5 \leftarrow T_5 \oplus F0(RK_{4i + 2}, T_4), \\
-                T_7 \leftarrow T_7 \oplus F1(RK_{4i + 3}, T_6)
-
-   *Passo 2.2.* T_0 | T_1 | ... | T_6 | T_7 \leftarrow T_1 | T_2 | ... | T_7 | T_0
-
-   *Passo 3.* Y_0 | Y_1 | ... | Y_6 | Y_7 \leftarrow T_7 | T_0 | ... |
-   T_5 | T_6
+   | *Passo 1.*   | T_0 \mid T_1 \mid ... \mid T_7 \leftarrow X_0 \mid X_1 \mid ... \mid X_7                   |
+   | *Passo 2.*   | Para i = 0 até $r-1$ faça:                                                                 |
+   | *Passo 2.1.* | T_1 \leftarrow T_1 \oplus F0(RK_{4i}, T_0),                                                |
+   |              | T_3 \leftarrow T_3 \oplus F1(RK_{4i + 1}, T_2),                                            |
+   |              | T_5 \leftarrow T_5 \oplus F0(RK_{4i + 2}, T_4),                                            |
+   |              | T_7 \leftarrow T_7 \oplus F1(RK_{4i + 3}, T_6)                                             |
+   | *Passo 2.2.* | T_0 \mid T_1 \mid ... \mid T_6 \mid T_7 \leftarrow T_1 \mid T_2 \mid ... \mid T_7 \mid T_0 |
+   | *Passo 3.* | Y_0 \mid Y_1 \mid ... \mid Y_6 \mid Y_7 \leftarrow T_7 \mid T_0 \mid ... \mid   T_5 \mid T_6 |
    
    Temos também a necessidade de gerar a inversa da GFN_{4, r} para
    que seja usada na função de decriptar. Abaixo, ela é apresentada
@@ -112,16 +101,16 @@
 
    *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3
 
-   *Passo 1.* T_0 | T_1 | T_2 | T_3 <- X_0 | X_1 | X_2 | X_3
+   *Passo 1.* T_0 \mid T_1 \mid T_2 \mid T_3 <- X_0 \mid X_1 \mid X_2 \mid X_3
 
    *Passo 2.* Para i = 0 até $r-1$ faça: 
 
    *Passo 2.1.* T_1 <- T_1 \oplus F0(RK_{2(r - i) - 2}, T_0),
    T_3 <- T_3 \oplus F1(RK_{2(r - i) - 1}, T_2)
 
-   *Passo 2.2.* T_0 | T_1 | T_2 | T_3 <- T_3 | T_0 | T_1 | T_2
+   *Passo 2.2.* T_0 \mid T_1 \mid T_2 \mid T_3 <- T_3 \mid T_0 \mid T_1 \mid T_2
 
-   *Passo 3.* Y_0 | Y_1 | Y_2 | Y_3 <- T_1 | T_2 | T_3 | T_0
+   *Passo 3.* Y_0 \mid Y_1 \mid Y_2 \mid Y_3 <- T_1 \mid T_2 \mid T_3 \mid T_0
 
 
    
@@ -137,15 +126,15 @@
 
     *Saída*: 32-bit data y
 
-    *Passo 1.* T <- RK XOR x
+    *Passo 1.* T <- RK \oplus x
 
-    *Passo 2.* Let T = T_0 | T_1 | T_2 | T_3, where Ti is 8-bit data, \\
+    *Passo 2.* Let T = T_0 \mid T_1 \mid T_2 \mid T_3, where Ti is 8-bit data, \\
                T_0 <- S0(T_0), \\
                T_1 <- S1(T_1), \\
                T_2 <- S0(T_2), \\
                T_3 <- S1(T_3)
 
-    *Passo 3.* Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
+    *Passo 3.* Let y = y0 \mid y1 \mid y2 \mid y3, where yi is 8-bit data,
                y <- M0 trans((T_0, T_1, T_2, T_3))
 
     *F1(RK, x)*
@@ -154,15 +143,15 @@
 
     *Saída*: 32-bit data y
 
-    *Passo 1.* T <- RK XOR x
+    *Passo 1.* T <- RK \oplus x
 
-    *Passo 2.* Let T = T_0 | T_1 | T_2 | T_3, where Ti is 8-bit data,
-               T_0 <- S1(T_0),
-               T_1 <- S0(T_1),
-               T_2 <- S1(T_2),
+    *Passo 2.* Let T = T_0 \mid T_1 \mid T_2 \mid T_3, where Ti is 8-bit data, \\
+               T_0 <- S1(T_0), \\
+               T_1 <- S0(T_1), \\
+               T_2 <- S1(T_2), \\
                T_3 <- S0(T_3)
 
-    *Passo 3.* Let y = y0 | y1 | y2 | y3, where yi is 8-bit data,
+    *Passo 3.* Let y = y0 \mid y1 \mid y2 \mid y3, where yi is 8-bit data,
                y <- M1 trans((T_0, T_1, T_2, T_3))
 
     Ambas as funções utilizam as S-boxes que serão mostradas abaixo.
@@ -178,44 +167,45 @@
        Tabela 1: S-Box S0
 
    \begin{verbatim}
-      .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
-   0. 57 49 d1 c6 2f 33 74 fb 95 6d 82 ea 0e b0 a8 1c
-   1. 28 d0 4b 92 5c ee 85 b1 c4 0a 76 3d 63 f9 17 af
-   2. bf a1 19 65 f7 7a 32 20 06 ce e4 83 9d 5b 4c d8
-   3. 42 5d 2e e8 d4 9b 0f 13 3c 89 67 c0 71 aa b6 f5
-   4. a4 be fd 8c 12 00 97 da 78 e1 cf 6b 39 43 55 26
-   5. 30 98 cc dd eb 54 b3 8f 4e 16 fa 22 a5 77 09 61
-   6. d6 2a 53 37 45 c1 6c ae ef 70 08 99 8b 1d f2 b4
-   7. e9 c7 9f 4a 31 25 fe 7c d3 a2 bd 56 14 88 60 0b
-   8. cd e2 34 50 9e dc 11 05 2b b7 a9 48 ff 66 8a 73
-   9. 03 75 86 f1 6a a7 40 c2 b9 2c db 1f 58 94 3e ed
-   a. fc 1b a0 04 b8 8d e6 59 62 93 35 7e ca 21 df 47
-   b. 15 f3 ba 7f a6 69 c8 4d 87 3b 9c 01 e0 de 24 52
-   c. 7b 0c 68 1e 80 b2 5a e7 ad d5 23 f4 46 3f 91 c9
-   d. 6e 84 72 bb 0d 18 d9 96 f0 5f 41 ac 27 c5 e3 3a
-   e. 81 6f 07 a3 79 f6 2d 38 1a 44 5e b5 d2 ec cb 90
-   f. 9a 36 e5 29 c3 4f ab 64 51 f8 10 d7 bc 02 7d 8e
+         .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
+      0. 57 49 d1 c6 2f 33 74 fb 95 6d 82 ea 0e b0 a8 1c
+      1. 28 d0 4b 92 5c ee 85 b1 c4 0a 76 3d 63 f9 17 af
+      2. bf a1 19 65 f7 7a 32 20 06 ce e4 83 9d 5b 4c d8
+      3. 42 5d 2e e8 d4 9b 0f 13 3c 89 67 c0 71 aa b6 f5
+      4. a4 be fd 8c 12 00 97 da 78 e1 cf 6b 39 43 55 26
+      5. 30 98 cc dd eb 54 b3 8f 4e 16 fa 22 a5 77 09 61
+      6. d6 2a 53 37 45 c1 6c ae ef 70 08 99 8b 1d f2 b4
+      7. e9 c7 9f 4a 31 25 fe 7c d3 a2 bd 56 14 88 60 0b
+      8. cd e2 34 50 9e dc 11 05 2b b7 a9 48 ff 66 8a 73
+      9. 03 75 86 f1 6a a7 40 c2 b9 2c db 1f 58 94 3e ed
+      a. fc 1b a0 04 b8 8d e6 59 62 93 35 7e ca 21 df 47
+      b. 15 f3 ba 7f a6 69 c8 4d 87 3b 9c 01 e0 de 24 52
+      c. 7b 0c 68 1e 80 b2 5a e7 ad d5 23 f4 46 3f 91 c9
+      d. 6e 84 72 bb 0d 18 d9 96 f0 5f 41 ac 27 c5 e3 3a
+      e. 81 6f 07 a3 79 f6 2d 38 1a 44 5e b5 d2 ec cb 90
+      f. 9a 36 e5 29 c3 4f ab 64 51 f8 10 d7 bc 02 7d 8e
    \end{verbatim}
+   
    Tabela 2: S-Box S1
 
    \begin{verbatim}
-      .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
-   0. 6c da c3 e9 4e 9d 0a 3d b8 36 b4 38 13 34 0c d9
-   1. bf 74 94 8f b7 9c e5 dc 9e 07 49 4f 98 2c b0 93
-   2. 12 eb cd b3 92 e7 41 60 e3 21 27 3b e6 19 d2 0e
-   3. 91 11 c7 3f 2a 8e a1 bc 2b c8 c5 0f 5b f3 87 8b
-   4. fb f5 de 20 c6 a7 84 ce d8 65 51 c9 a4 ef 43 53
-   5. 25 5d 9b 31 e8 3e 0d d7 80 ff 69 8a ba 0b 73 5c
-   6. 6e 54 15 62 f6 35 30 52 a3 16 d3 28 32 fa aa 5e
-   7. cf ea ed 78 33 58 09 7b 63 c0 c1 46 1e df a9 99
-   8. 55 04 c4 86 39 77 82 ec 40 18 90 97 59 dd 83 1f
-   9. 9a 37 06 24 64 7c a5 56 48 08 85 d0 61 26 ca 6f
-   a. 7e 6a b6 71 a0 70 05 d1 45 8c 23 1c f0 ee 89 ad
-   b. 7a 4b c2 2f db 5a 4d 76 67 17 2d f4 cb b1 4a a8
-   c. b5 22 47 3a d5 10 4c 72 cc 00 f9 e0 fd e2 fe ae
-   d. f8 5f ab f1 1b 42 81 d6 be 44 29 a6 57 b9 af f2
-   e. d4 75 66 bb 68 9f 50 02 01 3c 7f 8d 1a 88 bd ac
-   f. f7 e4 79 96 a2 fc 6d b2 6b 03 e1 2e 7d 14 95 1d
+         .0 .1 .2 .3 .4 .5 .6 .7 .8 .9 .a .b .c .d .e .f
+      0. 6c da c3 e9 4e 9d 0a 3d b8 36 b4 38 13 34 0c d9
+      1. bf 74 94 8f b7 9c e5 dc 9e 07 49 4f 98 2c b0 93
+      2. 12 eb cd b3 92 e7 41 60 e3 21 27 3b e6 19 d2 0e
+      3. 91 11 c7 3f 2a 8e a1 bc 2b c8 c5 0f 5b f3 87 8b
+      4. fb f5 de 20 c6 a7 84 ce d8 65 51 c9 a4 ef 43 53
+      5. 25 5d 9b 31 e8 3e 0d d7 80 ff 69 8a ba 0b 73 5c
+      6. 6e 54 15 62 f6 35 30 52 a3 16 d3 28 32 fa aa 5e
+      7. cf ea ed 78 33 58 09 7b 63 c0 c1 46 1e df a9 99
+      8. 55 04 c4 86 39 77 82 ec 40 18 90 97 59 dd 83 1f
+      9. 9a 37 06 24 64 7c a5 56 48 08 85 d0 61 26 ca 6f
+      a. 7e 6a b6 71 a0 70 05 d1 45 8c 23 1c f0 ee 89 ad
+      b. 7a 4b c2 2f db 5a 4d 76 67 17 2d f4 cb b1 4a a8
+      c. b5 22 47 3a d5 10 4c 72 cc 00 f9 e0 fd e2 fe ae
+      d. f8 5f ab f1 1b 42 81 d6 be 44 29 a6 57 b9 af f2
+      e. d4 75 66 bb 68 9f 50 02 01 3c 7f 8d 1a 88 bd ac
+      f. f7 e4 79 96 a2 fc 6d b2 6b 03 e1 2e 7d 14 95 1d
    \end{verbatim}
 
 *** Matrizes de Difusão
@@ -225,23 +215,23 @@
 
     Abaixo é mostrado como é feito essa multiplicação.
 
-   y = M0 trans((T_0, T_1, T_2, T_3)):
+    y = M0 trans((T_0, T_1, T_2, T_3)):
 
-     y0 =         T_0  XOR (0x02 * T_1) XOR (0x04 * T_2) XOR (0x06 * T_3),
-     y1 = (0x02 * T_0) XOR         T_1  XOR (0x06 * T_2) XOR (0x04 * T_3),
-     y2 = (0x04 * T_0) XOR (0x06 * T_1) XOR         T_2  XOR (0x02 * T_3),
-     y3 = (0x06 * T_0) XOR (0x04 * T_1) XOR (0x02 * T_2) XOR         T_3
+    y0 =         T_0  \oplus (0x02 * T_1) \oplus (0x04 * T_2) \oplus (0x06 * T_3), \\
+    y1 = (0x02 * T_0) \oplus         T_1  \oplus (0x06 * T_2) \oplus (0x04 * T_3), \\
+    y2 = (0x04 * T_0) \oplus (0x06 * T_1) \oplus         T_2  \oplus (0x02 * T_3), \\
+    y3 = (0x06 * T_0) \oplus (0x04 * T_1) \oplus (0x02 * T_2) \oplus         T_3
 
-   y = M1 trans((T_0, T_1, T_2, T_3)):
+    y = M1 trans((T_0, T_1, T_2, T_3)):
 
-     y0 =         T_0  XOR (0x08 * T_1) XOR (0x02 * T_2) XOR (0x0a * T_3),
-     y1 = (0x08 * T_0) XOR         T_1  XOR (0x0a * T_2) XOR (0x02 * T_3),
-     y2 = (0x02 * T_0) XOR (0x0a * T_1) XOR         T_2  XOR (0x08 * T_3),
-     y3 = (0x0a * T_0) XOR (0x02 * T_1) XOR (0x08 * T_2) XOR         T_3
+    y0 =         T_0  \oplus (0x08 * T_1) \oplus (0x02 * T_2) \oplus (0x0a * T_3), \\
+    y1 = (0x08 * T_0) \oplus         T_1  \oplus (0x0a * T_2) \oplus (0x02 * T_3), \\
+    y2 = (0x02 * T_0) \oplus (0x0a * T_1) \oplus         T_2  \oplus (0x08 * T_3), \\
+    y3 = (0x0a * T_0) \oplus (0x02 * T_1) \oplus (0x08 * T_2) \oplus         T_3
 
-     Temos que o sinal * indica multiplicação em GF(2^8) onde o
-     polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1. Teremos uma
-     seção abaixo explicando como é feito as operações em GF(2^8).
+    Temos que o sinal * indica multiplicação em GF(2^8) onde o
+    polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1. Teremos uma
+    seção abaixo explicando como é feito as operações em GF(2^8).
 
 ** Algoritmo de encriptação
 
@@ -259,12 +249,12 @@
             WK_i tem 32 bits
    Saída: bloco cifrado : C = \{C_0, C_1, C_2, C_3\}, C_i tem 32 bits
 
-   Step 1. T0 | T1 | T2 | T3 <- P0 | (P1 XOR WK0) | P2 | (P3 XOR WK1)
+   *Passo 1.* T_0 \mid T_1 \mid T_2 \mid T_3 <- P0 \mid (P1 \oplus WK0) \mid P2 \mid (P3 \oplus WK1)
 
-      Step 2. T0 | T1 | T2 | T3
-                    <- GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, T0, T1, T2, T3)
+   *Passo 2.* T_0 \mid T_1 \mid T_2 \mid T_3
+                    <- GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, T_0, T_1, T_2, T_3)
 
-      Step 3. C0 | C1 | C2 | C3 <- T0 | (T1 XOR WK2) | T2 | (T3 XOR
+   *Passo 3.* C0 \mid C1 \mid C2 \mid C3 <- T_0 \mid (T_1 \oplus WK2) \mid T_2 \mid (T_3 \oplus
       WK3)
 
       
