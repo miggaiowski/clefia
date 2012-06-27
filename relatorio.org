@@ -94,23 +94,18 @@
    Temos também a necessidade de gerar a inversa da GFN_{4, r} para
    que seja usada na função de decriptar. Abaixo, ela é apresentada
 
-   *GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)*
+   | *GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, X_0, X_1, X_2, X_3)* |
 
-   *Entrada* : 32-bit round keys RK_{0}, ..., RK_{2r-1}, \\
-               32-bit data X_0, X_1, X_2, X_3,
+   | *Entrada*: | 32-bit round keys | RK_{0}, ..., RK_{2r-1}, |
+   |            | 32-bit data       | X_0, X_1, X_2, X_3,     |
+   | *Saída*:   | 32-bit data       | Y_0, Y_1, Y_2, Y_3      |
 
-   *Saída*: 32-bit data Y_0, Y_1, Y_2, Y_3
-
-   *Passo 1.* T_0 \mid T_1 \mid T_2 \mid T_3 <- X_0 \mid X_1 \mid X_2 \mid X_3
-
-   *Passo 2.* Para i = 0 até $r-1$ faça: 
-
-   *Passo 2.1.* T_1 <- T_1 \oplus F0(RK_{2(r - i) - 2}, T_0),
-   T_3 <- T_3 \oplus F1(RK_{2(r - i) - 1}, T_2)
-
-   *Passo 2.2.* T_0 \mid T_1 \mid T_2 \mid T_3 <- T_3 \mid T_0 \mid T_1 \mid T_2
-
-   *Passo 3.* Y_0 \mid Y_1 \mid Y_2 \mid Y_3 <- T_1 \mid T_2 \mid T_3 \mid T_0
+   | *Passo 1.*   | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow X_0 \mid X_1 \mid X_2 \mid X_3 |
+   | *Passo 2.*   | Para i = 0 até $r-1$ faça:                                       |
+   | *Passo 2.1.* | T_1 \leftarrow T_1 \oplus F0(RK_{2(r - i) - 2}, T_0),                    |
+   |              | T_3 \leftarrow T_3 \oplus F1(RK_{2(r - i) - 1}, T_2)                     |
+   | *Passo 2.2.* | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow T_3 \mid T_0 \mid T_1 \mid T_2 |
+   | *Passo 3.*   | Y_0 \mid Y_1 \mid Y_2 \mid Y_3 \leftarrow T_1 \mid T_2 \mid T_3 \mid T_0 |
 
 
    
@@ -120,39 +115,33 @@
     duas funções F, denominadas F0 e F1. Abaixo, iremos descrevê-las.
 
      
-    *F0(RK, x)*
+    | *F0(RK, x)* |
 
-    *Entrada* : 32-bit round key RK, 32-bit data x,
+    | *Entrada* : | 32-bit round key | RK, 32-bit data x, |
+    | *Saída*:    | 32-bit data y    |                    |
 
-    *Saída*: 32-bit data y
+    | *Passo 1.* | T \leftarrow RK \oplus x                                   |
+    | *Passo 2.* | Let T = T_0 \mid T_1 \mid T_2 \mid T_3, com T_i de 8-bits, |
+    |            | T_0 \leftarrow S0(T_0),                                    |
+    |            | T_1 \leftarrow S1(T_1),                                    |
+    |            | T_2 \leftarrow S0(T_2),                                    |
+    |            | x                                                          |
+    | *Passo 3.* | Let y = y_0 \mid y_1 \mid y_2 \mid y_3, com y_i de 8-bits, |
+    |            | y \leftarrow M0 trans((T_0, T_1, T_2, T_3))                |
 
-    *Passo 1.* T <- RK \oplus x
+    | *F1(RK, x)* |
 
-    *Passo 2.* Let T = T_0 \mid T_1 \mid T_2 \mid T_3, where Ti is 8-bit data, \\
-               T_0 <- S0(T_0), \\
-               T_1 <- S1(T_1), \\
-               T_2 <- S0(T_2), \\
-               T_3 <- S1(T_3)
+    | *Entrada* : | 32-bit round key | RK, 32-bit data x, |
+    | *Saída*:    | 32-bit data      | y                  |
 
-    *Passo 3.* Let y = y0 \mid y1 \mid y2 \mid y3, where yi is 8-bit data,
-               y <- M0 trans((T_0, T_1, T_2, T_3))
-
-    *F1(RK, x)*
-
-    *Entrada* : 32-bit round key RK, 32-bit data x,
-
-    *Saída*: 32-bit data y
-
-    *Passo 1.* T <- RK \oplus x
-
-    *Passo 2.* Let T = T_0 \mid T_1 \mid T_2 \mid T_3, where Ti is 8-bit data, \\
-               T_0 <- S1(T_0), \\
-               T_1 <- S0(T_1), \\
-               T_2 <- S1(T_2), \\
-               T_3 <- S0(T_3)
-
-    *Passo 3.* Let y = y0 \mid y1 \mid y2 \mid y3, where yi is 8-bit data,
-               y <- M1 trans((T_0, T_1, T_2, T_3))
+    | *Passo 1.* | T \leftarrow RK \oplus x                                        |
+    | *Passo 2.* | Let T = T_0 \mid T_1 \mid T_2 \mid T_3, com T_i de 8-bits,      |
+    |            | T_0 \leftarrow S1(T_0),                                         |
+    |            | T_1 \leftarrow S0(T_1),                                         |
+    |            | T_2 \leftarrow S1(T_2),                                         |
+    |            | T_3 \leftarrow S0(T_3)                                          |
+    | *Passo 3.* | Let y = y0 \mid y1 \mid y2 \mid y3, com y_i de 8-bits,          |
+    |            | y \leftarrow M1 trans((T_0, T_1, T_2, T_3))                     |
 
     Ambas as funções utilizam as S-boxes que serão mostradas abaixo.
 
@@ -215,19 +204,19 @@
 
     Abaixo é mostrado como é feito essa multiplicação.
 
-    y = M0 trans((T_0, T_1, T_2, T_3)):
+    y = M0 trans((T_0, T_1, T_2, T_3)):  
 
-    y0 =         T_0  \oplus (0x02 * T_1) \oplus (0x04 * T_2) \oplus (0x06 * T_3), \\
-    y1 = (0x02 * T_0) \oplus         T_1  \oplus (0x06 * T_2) \oplus (0x04 * T_3), \\
-    y2 = (0x04 * T_0) \oplus (0x06 * T_1) \oplus         T_2  \oplus (0x02 * T_3), \\
-    y3 = (0x06 * T_0) \oplus (0x04 * T_1) \oplus (0x02 * T_2) \oplus         T_3
+    | y0 = | T_0          | \oplus | (0x02 * T_1) | \oplus | (0x04 * T_2) | \oplus | (0x06 * T_3), |
+    | y1 = | (0x02 * T_0) | \oplus | T_1          | \oplus | (0x06 * T_2) | \oplus | (0x04 * T_3), |
+    | y2 = | (0x04 * T_0) | \oplus | (0x06 * T_1) | \oplus | T_2          | \oplus | (0x02 * T_3), |
+    | y3 = | (0x06 * T_0) | \oplus | (0x04 * T_1) | \oplus | (0x02 * T_2) | \oplus | T_3           |
 
     y = M1 trans((T_0, T_1, T_2, T_3)):
 
-    y0 =         T_0  \oplus (0x08 * T_1) \oplus (0x02 * T_2) \oplus (0x0a * T_3), \\
-    y1 = (0x08 * T_0) \oplus         T_1  \oplus (0x0a * T_2) \oplus (0x02 * T_3), \\
-    y2 = (0x02 * T_0) \oplus (0x0a * T_1) \oplus         T_2  \oplus (0x08 * T_3), \\
-    y3 = (0x0a * T_0) \oplus (0x02 * T_1) \oplus (0x08 * T_2) \oplus         T_3
+    | y0 = | T_0          | \oplus | (0x08 * T_1) | \oplus | (0x02 * T_2) | \oplus | (0x0a * T_3), |
+    | y1 = | (0x08 * T_0) | \oplus | T_1          | \oplus | (0x0a * T_2) | \oplus | (0x02 * T_3), |
+    | y2 = | (0x02 * T_0) | \oplus | (0x0a * T_1) | \oplus | T_2          | \oplus | (0x08 * T_3), |
+    | y3 = | (0x0a * T_0) | \oplus | (0x02 * T_1) | \oplus | (0x08 * T_2) | \oplus | T_3           |
 
     Temos que o sinal * indica multiplicação em GF(2^8) onde o
     polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1. Teremos uma
@@ -242,21 +231,15 @@
    rounds keys seja 36, 44 e 52, já que para cada round são
    necessários duas rounds keys.
 
-   Entrada: bloco plain : P = \{P_0, P_1, P_2, P_3\}, P_i tem 32 bits
-            numero de rounds : r tem 32 bits
-	    rounds keys : RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits
-   Saída: bloco cifrado : C = \{C_0, C_1, C_2, C_3\}, C_i tem 32 bits
+   | *Entrada*: | bloco plain :      | P = \{P_0, P_1, P_2, P_3\}, P_i tem 32 bits                          |
+   |            | numero de rounds : | r tem 32 bits                                                        |
+   |            | rounds keys :      | RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits                    |
+   |            | whitening keys :   | WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},            WK_i tem 32 bits |
+   | *Saída*:   | bloco cifrado :    | C = \{C_0, C_1, C_2, C_3\}, C_i tem 32 bits                          |
 
-   *Passo 1.* T_0 \mid T_1 \mid T_2 \mid T_3 <- P0 \mid (P1 \oplus WK0) \mid P2 \mid (P3 \oplus WK1)
-
-   *Passo 2.* T_0 \mid T_1 \mid T_2 \mid T_3
-                    <- GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, T_0, T_1, T_2, T_3)
-
-   *Passo 3.* C0 \mid C1 \mid C2 \mid C3 <- T_0 \mid (T_1 \oplus WK2) \mid T_2 \mid (T_3 \oplus
-      WK3)
-
+   | *Passo 1.* | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow P0 \mid (P1 \oplus WK0) \mid P2 \mid (P3 \oplus WK1)  |
+   | *Passo 2.* | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow GFN_{4,r}(RK_{0}, ..., RK_{2r-1}, T_0, T_1, T_2, T_3) |
+   | *Passo 3.* | C0 \mid C1 \mid C2 \mid C3 \leftarrow T_0 \mid (T_1 \oplus WK2) \mid T_2 \mid (T_3 \oplus WK3)  |
       
      As 4 whitening keys e as 2r rounds keys são geradas a partir da
      chave k. Esse processo será mostrado numa seção mais abaixo.
@@ -268,21 +251,15 @@
    que a diferença entre os possíveis tamanhos de chaves será apenas no número
    de rounds feitos no GFN.
 
-   Entrada: bloco cifrado : C = \{C_0, C_1, C_2, C_3\}, P_i tem 32 bits
-            numero de rounds : r tem 32 bits
-	    rounds keys : RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits
-   Saída: bloco plain : P = \{P_0, P_1, P_2, P_3\}, C_i tem 32 bits   
+   | *Entrada*: | bloco plain :      | C = \{C_0, C_1, C_2, C_3\}, C_i tem 32 bits                |
+   |            | numero de rounds : | r tem 32 bits                                              |
+   |            | rounds keys :      | RK = \{RK_{0}, ..., RK_{2r-1}\}, RK_i tem 32 bits          |
+   |            | whitening keys :   | WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},  WK_i tem 32 bits |
+   | *Saída*:   | bloco cifrado :    | P = \{P_0, P_1, P_2, P_3\}, P_i tem 32 bits                |
    
-   Step 1. T0 | T1 | T2 | T3 <- C0 | (C1 XOR WK2) | C2 | (C3 XOR WK3)
-
-      Step 2. T0 | T1 | T2 | T3
-                 <- GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, T0, T1, T2, T3)
-
-      Step 3. P0 | P1 | P2 | P3 <- T0 | (T1 XOR WK0) | T2 | (T3 XOR
-      WK1)
-
+   | *Passo 1.* | T_0 \mid T_1 \mid T_2 \mid T_3 \leftarrow C_0 \mid (C_1 \oplus WK2) \mid C_2 \mid (C_3 \oplus WK3)                 |
+   | *Passo 2.* | T_0 \mid T_1 \mid T_2 \mid T_3                 \leftarrow GFNINV_{4,r}(RK_{0}, ..., RK_{2r-1}, T_0, T_1, T_2, T_3) |
+   | *Passo 3.* | P_0 \mid P_1 \mid P_2 \mid P_3 \leftarrow T_0 \mid (T_1 \oplus WK0) \mid T_2 \mid (T_3 \oplus      WK1)            |
 
       Podemos observar a simetria com o algoritmo de encriptação,
       mudando apenas WK_0 e WK_1 com WK_2 e WK_3. Além disso, é usado
@@ -295,8 +272,9 @@
 
    Essas chaves são geradas a partir da chave k, com os seguintes
    passos:
-1. Gera L a partir de K
-2. Expande K e L, gerando WK e RK
+
+   1. Gera L a partir de K
+   2. Expande K e L, gerando WK e RK
 
    Para gerar L a partir de K, é usado um 4-branch GFN com 12 rounds se
    k for de 128 bits, ou é usado um 8-branch GFN com 10 rounds se k
@@ -318,9 +296,9 @@
  As imagens abaixo mostram como funcionam a encriptação e
  desencriptação no modo CBC.
 
- [[Cbc_encryption.png]]
+ [[./Cbc_encryption.png]]
 
- [[Cbc_Cbc_decryption.png]]
+ [[./Cbc_Cbc_decryption.png]]
 
  Temos que IV representa um vetor aleatório de 128 bits que serve para
  deixar cada mensagem única, mesmo sendo do mesmo texto.
