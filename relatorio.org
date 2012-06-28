@@ -14,6 +14,10 @@
 #+LINK_HOME: 
 #+LATEX_HEADER: \usepackage{sbc-template}
 
+\begin{abstract}
+Pequeno texto
+\end{abstract}
+
 * Introdução
 
   CLEFIA é um algoritmo de cifragem de blocos, desenvolvido pela SONY,
@@ -37,7 +41,7 @@
   realizados  com o  cifrador AES  também no  modo CBC,  disponível na
   biblioteca   OpenSSL.  Dessa   forma,  foi   possível   comparar  os
   resultados.
-
+  
 * Algoritmo CLEFIA
 
   O algoritmo CLEFIA consiste em  duas partes, a de geração de chaves,
@@ -288,8 +292,8 @@
 
    For 128-bit data X,
 
-   Y = Sigma(X)
-     = X[7-63] | X[121-127] | X[0-6] | X[64-120]
+   | Y | = | Sigma(X)                                           |
+   |   | = | X[7-63] \mid X[121-127] \mid X[0-6] \mid X[64-120] |
 
      Temos que X[a-b] denota os bits entre a e b
      inclusive. Consideramos sempre o bit 0 como sendo o mais
@@ -301,210 +305,63 @@
     keys para um chave de 128 bits. Os valores do vetor de constante
     CON_128 é especificado numa tabela ao final dessa seção.
     
-    Entrada: chave : K = \{k_0, k_1, K_2, k_3}, k_i tem 32 bits
-    Saida:  rounds keys : RK = \{RK_{0}, ..., RK_{35}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+   | *Entrada*: | chave :          | K = \{k_0, k_1, K_2, k_3}, k_i tem 32 bits                  |
+   | *Saida*:   | rounds keys :    | RK = \{RK_{0}, ..., RK_{35}\}, RK_i tem 32 bits             |
+   |            | whitening keys : | WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},   WK_i tem 32 bits |
 
-    (Generating L from K)
-
-      Step 1. L <- GFN_{4,12}(CON_128[0], ..., CON_128[23], K0, ..., K3)
-
-   (Expanding K and L)
-
-      Step 2. WK0 | WK1 | WK2 | WK3 <- K
-
-      Step 3. For i = 0 to 8 do the following:
-           T <- L XOR (CON_128[24 + 4i] | CON_128[24 + 4i + 1]
-                         | CON_128[24 + 4i + 2] | CON_128[24 + 4i + 3])
-           L <- Sigma(L)
-           if i is odd: T <- T XOR K
-           RK_{4i} | RK_{4i + 1} | RK_{4i + 2} | RK_{4i + 3} <- T
+    | *Passo 1.* | L \leftarrow GFN_{4,12}(CON_128[0], ..., CON_128[23], K0, ..., K3)                                                     |
+    | *Passo 2.* | WK0 \mid WK1 \mid WK2 \mid WK3 \leftarrow K                                                                            |
+    | *Passo 3.* | For i = 0 to 8 do the following:                                                                               |
+    |            | T \leftarrow L \oplus (CON_128[24 + 4i] \mid CON_128[24 + 4i + 1] \mid CON_128[24 + 4i + 2] \mid CON_128[24 + 4i + 3]) |
+    |            | L \leftarrow Sigma(L)                                                                                                  |
+    |            | if i is odd: T \leftarrow T \oplus K                                                                                   |
+    |            | RK_{4i} \mid RK_{4i + 1} \mid RK_{4i + 2} \mid RK_{4i + 3} \leftarrow T                                                |
 
 *** Geração de chaves para o modo 192 e 256 bits
 
     Abaixo temos o algoritmo para o modo 192 e 256 bits. Podemos ver
     que eles são bem parecidos entre si.
 
-    Entrada para K = 192: chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5}, k_i tem 32 bits
-    Saida para K = 192:  rounds keys : RK = \{RK_{0}, ..., RK_{43}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+    | *Entrada para K = 192*: | chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5}, k_i tem 32 bits                       |
+    | *Saida para K = 192*:   | rounds keys : RK = \{RK_{0}, ..., RK_{43}\}, RK_i tem 32 bits                      |
+    |                         | whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},         WK_i tem 32 bits |
 
-   Entrada para K = 256: chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5,
-    k_6, k_7}, k_i tem 32 bits
-    Saida para k = 256:  rounds keys : RK = \{RK_{0}, ..., RK_{51}\}, RK_i tem 32 bits
-	    whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},
-            WK_i tem 32 bits  
+    | *Entrada para K = 256*: | chave : k = \{k_0, k_1, K_2, k_3, k_4, k_5, k_6, k_7}, k_i tem 32 bits      |
+    | *Saida para k = 256*: | rounds keys : RK = \{RK_{0}, ..., RK_{51}\}, RK_i tem 32 bits               |
+    |                       | whitening keys : WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},  WK_i tem 32 bits |
 
-     (Generating LL,LR from KL,KR for a k-bit key)
+    (Generating LL,LR from KL,KR for a k-bit key)
 
-      Step 1. Set k = 192 or k = 256
+    | *Passo 1.* | k = 192 ou k = 256 |                                                                                                        |
+    | *Passo 2.* | If k = 192:        |                                                                                                        |
+    |            |                    | KL \leftarrow K0 \mid K1 \mid K2 \mid K3, KR \leftarrow K4 \mid K5 \mid \thicksim K0 \mid \thicksim K1 |
+    |            | else if k = 256 :  |                                                                                                        |
+    |            |                    | KL \leftarrow K0 \mid K1 \mid K2 \mid K3, KR \leftarrow K4 \mid K5 \mid K6 \mid K7                     |
 
-      Step 2. If k = 192   :
-                     KL <- K0 | K1 | K2 | K3, KR <- K4 | K5 | ~K0 | ~K1
-              else if k = 256 :
-                     KL <- K0 | K1 | K2 | K3, KR <- K4 | K5 | K6 | K7
-
-      Step 3. Let KL = KL0 | KL1 | KL2 | KL3
-                  KR = KR0 | KR1 | KR2 | KR3
-                  LL|LR <-
-                  GFN_{8,10}(CON_k[0] , ..., CON_k[39],
-                                    KL0, ..., KL3, KR0, ..., KR3)
+    | *Passo 3.* | Let KL = KL0 \mid KL1 \mid KL2 \mid KL3                                                   |   |
+    |            | KR = KR0 \mid KR1 \mid KR2 \mid KR3                                                       |   |
+    |            | LL \mid LR \leftarrow GFN_{8,10}(CON_k[0] , ..., CON_k[39], KL0, ..., KL3, KR0, ..., KR3) |   |
 
    (Expanding KL,KR and LL,LR for a k-bit key)
 
-      Step 4. WK0 | WK1 | WK2 | WK3 <- KL XOR KR
+   | *Passo 4.* | WK0 \mid WK1 \mid WK2 \mid WK3 \leftarrow KL \oplus KR |
 
-      Step 5. For i = 0 to 10 (if k = 192),
-                               or 12 (if k = 256) do the following:
-
-                  If (i mod 4) = 0 or 1:
-                      T <- LL XOR (CON_k[40 + 4i] | CON_k[40 + 4i + 1]
-                              | CON_k[40 + 4i + 2] | CON_k[40 + 4i + 3])
-                      LL <- Sigma(LL)
-                      if i is odd: T <- T XOR KR
-                  else:
-                      T <- LR XOR (CON_k[40 + 4i] | CON_k[40 + 4i + 1]
-                              | CON_k[40 + 4i + 2] | CON_k[40 + 4i + 3])
-                      LR <- Sigma(LR)
-                      if i is odd: T <- T XOR KL
-
-                  RK_{4i} | RK_{4i + 1} | RK_{4i + 2} | RK_{4i + 3} <- T
-
-
-*** Valores constantes
-
-    Abaixo temos as tabelas que representam os valores das constantes
-    utilizadas, CON_128, CON_192 e CON_256.
-
-   Table 7: CON_128[i] (0 <= i < 60)
-
-      i           0        1        2        3
-   CON_128[i] f56b7aeb 994a8a42 96a4bd75 fa854521
-      i           4        5        6        7
-   CON_128[i] 735b768a 1f7abac4 d5bc3b45 b99d5d62
-      i           8        9       10       11
-   CON_128[i] 52d73592 3ef636e5 c57a1ac9 a95b9b72
-      i          12       13       14       15
-   CON_128[i] 5ab42554 369555ed 1553ba9a 7972b2a2
-      i          16       17       18       19
-   CON_128[i] e6b85d4d 8a995951 4b550696 2774b4fc
-      i          20       21       22       23
-   CON_128[i] c9bb034b a59a5a7e 88cc81a5 e4ed2d3f
-      i          24       25       26       27
-   CON_128[i] 7c6f68e2 104e8ecb d2263471 be07c765
-      i          28       29       30       31
-   CON_128[i] 511a3208 3d3bfbe6 1084b134 7ca565a7
-      i          32       33       34       35
-   CON_128[i] 304bf0aa 5c6aaa87 f4347855 9815d543
-      i          36       37       38       39
-   CON_128[i] 4213141a 2e32f2f5 cd180a0d a139f97a
-      i          40       41       42       43
-   CON_128[i] 5e852d36 32a464e9 c353169b af72b274
-      i          44       45       46       47
-   CON_128[i] 8db88b4d e199593a 7ed56d96 12f434c9
-      i          48       49       50       51
-   CON_128[i] d37b36cb bf5a9a64 85ac9b65 e98d4d32
-      i          52       53       54       55
-   CON_128[i] 7adf6582 16fe3ecd d17e32c1 bd5f9f66
-      i          56       57       58       59
-   CON_128[i] 50b63150 3c9757e7 1052b098 7c73b3a7
-
-   Table 8: CON_192[i] (0 <= i < 84)
-
-      i           0        1        2        3
-   CON_192[i] c6d61d91 aaf73771 5b6226f8 374383ec
-      i           4        5        6        7
-   CON_192[i] 15b8bb4c 799959a2 32d5f596 5ef43485
-      i           8        9       10       11
-   CON_192[i] f57b7acb 995a9a42 96acbd65 fa8d4d21
-      i          12       13       14       15
-   CON_192[i] 735f7682 1f7ebec4 d5be3b41 b99f5f62
-      i          16       17       18       19
-   CON_192[i] 52d63590 3ef737e5 1162b2f8 7d4383a6
-      i          20       21       22       23
-   CON_192[i] 30b8f14c 5c995987 2055d096 4c74b497
-      i          24       25       26       27
-   CON_192[i] fc3b684b 901ada4b 920cb425 fe2ded25
-      i          28       29       30       31
-   CON_192[i] 710f7222 1d2eeec6 d4963911 b8b77763
-      i          32       33       34       35
-   CON_192[i] 524234b8 3e63a3e5 1128b26c 7d09c9a6
-      i          36       37       38       39
-   CON_192[i] 309df106 5cbc7c87 f45f7883 987ebe43
-      i          40       41       42       43
-   CON_192[i] 963ebc41 fa1fdf21 73167610 1f37f7c4
-      i          44       45       46       47
-   CON_192[i] 01829338 6da363b6 38c8e1ac 54e9298f
-      i          48       49       50       51
-   CON_192[i] 246dd8e6 484c8c93 fe276c73 9206c649
-      i          52       53       54       55
-   CON_192[i] 9302b639 ff23e324 7188732c 1da969c6
-      i          56       57       58       59
-   CON_192[i] 00cd91a6 6cec2cb7 ec7748d3 8056965b
-      i          60       61       62       63
-   CON_192[i] 9a2aa469 f60bcb2d 751c7a04 193dfdc2
-      i          64       65       66       67
-   CON_192[i] 02879532 6ea666b5 ed524a99 8173b35a
-      i          68       69       70       71
-   CON_192[i] 4ea00d7c 228141f9 1f59ae8e 7378b8a8
-      i          72       73       74       75
-   CON_192[i] e3bd5747 8f9c5c54 9dcfaba3 f1ee2e2a
-      i          76       77       78       79
-   CON_192[i] a2f6d5d1 ced71715 697242d8 055393de
-      i          80       81       82       83
-   CON_192[i] 0cb0895c 609151bb 3e51ec9e 5270b089
-
-   Table 9: CON_256[i] (0 <= i < 92)
-
-      i          0        1        2        3
-   CON_256[i] 0221947e 6e00c0b5 ed014a3f 8120e05a
-      i          4        5        6        7
-   CON_256[i] 9a91a51f f6b0702d a159d28f cd78b816
-      i          8        9       10       11
-   CON_256[i] bcbde947 d09c5c0b b24ff4a3 de6eae05
-      i         12       13       14       15
-   CON_256[i] b536fa51 d917d702 62925518 0eb373d5
-      i         16       17       18       19
-   CON_256[i] 094082bc 6561a1be 3ca9e96e 5088488b
-      i         20       21       22       23
-   CON_256[i] f24574b7 9e64a445 9533ba5b f912d222
-      i         24       25       26       27
-   CON_256[i] a688dd2d caa96911 6b4d46a6 076cacdc
-      i         28       29       30       31
-   CON_256[i] d9b72353 b596566e 80ca91a9 eceb2b37
-      i         32       33       34       35
-   CON_256[i] 786c60e4 144d8dcf 043f9842 681edeb3
-      i         36       37       38       39
-   CON_256[i] ee0e4c21 822fef59 4f0e0e20 232feff8
-      i         40       41       42       43
-   CON_256[i] 1f8eaf20 73af6fa8 37ceffa0 5bef2f80
-      i         44       45       46       47
-   CON_256[i] 23eed7e0 4fcf0f94 29fec3c0 45df1f9e
-      i         48       49       50       51
-   CON_256[i] 2cf6c9d0 40d7179b 2e72ccd8 42539399
-      i         52       53       54       55
-   CON_256[i] 2f30ce5c 4311d198 2f91cf1e 43b07098
-      i         56       57       58       59
-   CON_256[i] fbd9678f 97f8384c 91fdb3c7 fddc1c26
-      i         60       61       62       63
-   CON_256[i] a4efd9e3 c8ce0e13 be66ecf1 d2478709
-      i         64       65       66       67
-   CON_256[i] 673a5e48 0b1bdbd0 0b948714 67b575bc
-      i         68       69       70       71
-   CON_256[i] 3dc3ebba 51e2228a f2f075dd 9ed11145
-      i         72       73       74       75
-   CON_256[i] 417112de 2d5090f6 cca9096f a088487b
-      i         76       77       78       79
-   CON_256[i] 8a4584b7 e664a43d a933c25b c512d21e
-      i         80       81       82       83
-   CON_256[i] b888e12d d4a9690f 644d58a6 086cacd3
-      i         84       85       86       87
-   CON_256[i] de372c53 b216d669 830a9629 ef2beb34
-      i         88       89       90       91
-   CON_256[i] 798c6324 15ad6dce 04cf99a2 68ee2eb3	  
+   | *Passo 5.* | For i = 0 to 10 (if k = 192),                                                                                         |
+   |            | or 12 (if k = 256) do the following:                                                                                  |
+   |            | If (i mod 4) = 0 or 1:                                                                                                |
+   |            | \quad T \leftarrow LL \oplus (CON_k[40 + 4i] \mid CON_k[40 + 4i + 1] \mid CON_k[40 + 4i + 2] \mid CON_k[40 + 4i + 3]) |
+   |            | \quad LL \leftarrow Sigma(LL)                                                                                         |
+   |            | if i is odd:                                                                                                          |
+   |            | \quad T \leftarrow T \oplus KR                                                                                        |
+   |            | else:                                                                                                                 |
+   |            | \quad T \leftarrow LR \oplus (CON_k[40 + 4i] \mid CON_k[40 + 4i + 1] \mid CON_k[40 + 4i + 2] \mid CON_k[40 + 4i + 3]) |
+   |            | \quad LR \leftarrow Sigma(LR)                                                                                         |
+   |            | if i is odd: T \leftarrow T \oplus KL                                                                                 |
    
+   | RK_{4i} \mid RK_{4i + 1} \mid RK_{4i + 2} \mid RK_{4i + 3} \leftarrow T |
+
+*** Valores Constantes
+    As tabelas de constantes encontram-se em anexo.
 
 * Modo de operação CBC
 
@@ -521,15 +378,13 @@
  As imagens abaixo mostram como funcionam a encriptação e
  desencriptação no modo CBC.
 
-#+CAPTION:    The black-body emission of the disk around HR 4049
-     #+LABEL:      fig:SED-HR4049
-     #+ATTR_LaTeX: width=5cm,angle=90
- [[Cbc_encryption.png]]
+ #+CAPTION:    Cifragem no modo CBC
+ #+ATTR_LaTeX: width=\textwidth
+ [[./Cbc_encryption.png]]
 
-#+CAPTION:    The black-body emission of the disk around HR 4049
-     #+LABEL:      fig:SED-
-     #+ATTR_LaTeX: width=5cm,angle=90
- [[Cbc_Cbc_decryption.png]]
+#+CAPTION:    Decifragem no modo CBC
+ #+ATTR_LaTeX: width=\textwidth
+ [[./Cbc_decryption.png]]
 
  Temos que IV representa um vetor aleatório de 128 bits que serve para
  deixar cada mensagem única, mesmo sendo do mesmo texto.
@@ -537,7 +392,7 @@
  Como podemos ver, cada bloco cifrado é utilizado para gerar o próximo
  bloco. Logo, não é possível parelizar o CBC, sendo uma das suas
  principais desvantagem.
- 
+   
 * Resultados experimentais
   Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
   vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
@@ -597,3 +452,145 @@
 | Média         |      2.0458 |        33.2495 |
 | Desvio Padrão |      0.0191 |         0.1207 |
 |---------------+-------------+----------------|
+
+* Conclusão
+  Nosso algoritmo é mais lento.
+
+* Anexo: Valores constantes
+
+    Abaixo temos as tabelas que representam os valores das constantes
+    utilizadas, CON_128, CON_192 e CON_256.
+
+   Table 7: CON_128[i] (0 <= i < 60)
+
+   \begin{verbatim}
+      i           0        1        2        3
+   CON_128[i] f56b7aeb 994a8a42 96a4bd75 fa854521
+      i           4        5        6        7
+   CON_128[i] 735b768a 1f7abac4 d5bc3b45 b99d5d62
+      i           8        9       10       11
+   CON_128[i] 52d73592 3ef636e5 c57a1ac9 a95b9b72
+      i          12       13       14       15
+   CON_128[i] 5ab42554 369555ed 1553ba9a 7972b2a2
+      i          16       17       18       19
+   CON_128[i] e6b85d4d 8a995951 4b550696 2774b4fc
+      i          20       21       22       23
+   CON_128[i] c9bb034b a59a5a7e 88cc81a5 e4ed2d3f
+      i          24       25       26       27
+   CON_128[i] 7c6f68e2 104e8ecb d2263471 be07c765
+      i          28       29       30       31
+   CON_128[i] 511a3208 3d3bfbe6 1084b134 7ca565a7
+      i          32       33       34       35
+   CON_128[i] 304bf0aa 5c6aaa87 f4347855 9815d543
+      i          36       37       38       39
+   CON_128[i] 4213141a 2e32f2f5 cd180a0d a139f97a
+      i          40       41       42       43
+   CON_128[i] 5e852d36 32a464e9 c353169b af72b274
+      i          44       45       46       47
+   CON_128[i] 8db88b4d e199593a 7ed56d96 12f434c9
+      i          48       49       50       51
+   CON_128[i] d37b36cb bf5a9a64 85ac9b65 e98d4d32
+      i          52       53       54       55
+   CON_128[i] 7adf6582 16fe3ecd d17e32c1 bd5f9f66
+      i          56       57       58       59
+   CON_128[i] 50b63150 3c9757e7 1052b098 7c73b3a7
+   \end{verbatim}
+
+   Table 8: CON_192[i] (0 <= i < 84)
+
+   \begin{verbatim}
+      i           0        1        2        3
+   CON_192[i] c6d61d91 aaf73771 5b6226f8 374383ec
+      i           4        5        6        7
+   CON_192[i] 15b8bb4c 799959a2 32d5f596 5ef43485
+      i           8        9       10       11
+   CON_192[i] f57b7acb 995a9a42 96acbd65 fa8d4d21
+      i          12       13       14       15
+   CON_192[i] 735f7682 1f7ebec4 d5be3b41 b99f5f62
+      i          16       17       18       19
+   CON_192[i] 52d63590 3ef737e5 1162b2f8 7d4383a6
+      i          20       21       22       23
+   CON_192[i] 30b8f14c 5c995987 2055d096 4c74b497
+      i          24       25       26       27
+   CON_192[i] fc3b684b 901ada4b 920cb425 fe2ded25
+      i          28       29       30       31
+   CON_192[i] 710f7222 1d2eeec6 d4963911 b8b77763
+      i          32       33       34       35
+   CON_192[i] 524234b8 3e63a3e5 1128b26c 7d09c9a6
+      i          36       37       38       39
+   CON_192[i] 309df106 5cbc7c87 f45f7883 987ebe43
+      i          40       41       42       43
+   CON_192[i] 963ebc41 fa1fdf21 73167610 1f37f7c4
+      i          44       45       46       47
+   CON_192[i] 01829338 6da363b6 38c8e1ac 54e9298f
+      i          48       49       50       51
+   CON_192[i] 246dd8e6 484c8c93 fe276c73 9206c649
+      i          52       53       54       55
+   CON_192[i] 9302b639 ff23e324 7188732c 1da969c6
+      i          56       57       58       59
+   CON_192[i] 00cd91a6 6cec2cb7 ec7748d3 8056965b
+      i          60       61       62       63
+   CON_192[i] 9a2aa469 f60bcb2d 751c7a04 193dfdc2
+      i          64       65       66       67
+   CON_192[i] 02879532 6ea666b5 ed524a99 8173b35a
+      i          68       69       70       71
+   CON_192[i] 4ea00d7c 228141f9 1f59ae8e 7378b8a8
+      i          72       73       74       75
+   CON_192[i] e3bd5747 8f9c5c54 9dcfaba3 f1ee2e2a
+      i          76       77       78       79
+   CON_192[i] a2f6d5d1 ced71715 697242d8 055393de
+      i          80       81       82       83
+   CON_192[i] 0cb0895c 609151bb 3e51ec9e 5270b089
+   \end{verbatim}
+
+   Table 9: CON_256[i] (0 <= i < 92)
+
+   \begin{verbatim}
+      i          0        1        2        3
+   CON_256[i] 0221947e 6e00c0b5 ed014a3f 8120e05a
+      i          4        5        6        7
+   CON_256[i] 9a91a51f f6b0702d a159d28f cd78b816
+      i          8        9       10       11
+   CON_256[i] bcbde947 d09c5c0b b24ff4a3 de6eae05
+      i         12       13       14       15
+   CON_256[i] b536fa51 d917d702 62925518 0eb373d5
+      i         16       17       18       19
+   CON_256[i] 094082bc 6561a1be 3ca9e96e 5088488b
+      i         20       21       22       23
+   CON_256[i] f24574b7 9e64a445 9533ba5b f912d222
+      i         24       25       26       27
+   CON_256[i] a688dd2d caa96911 6b4d46a6 076cacdc
+      i         28       29       30       31
+   CON_256[i] d9b72353 b596566e 80ca91a9 eceb2b37
+      i         32       33       34       35
+   CON_256[i] 786c60e4 144d8dcf 043f9842 681edeb3
+      i         36       37       38       39
+   CON_256[i] ee0e4c21 822fef59 4f0e0e20 232feff8
+      i         40       41       42       43
+   CON_256[i] 1f8eaf20 73af6fa8 37ceffa0 5bef2f80
+      i         44       45       46       47
+   CON_256[i] 23eed7e0 4fcf0f94 29fec3c0 45df1f9e
+      i         48       49       50       51
+   CON_256[i] 2cf6c9d0 40d7179b 2e72ccd8 42539399
+      i         52       53       54       55
+   CON_256[i] 2f30ce5c 4311d198 2f91cf1e 43b07098
+      i         56       57       58       59
+   CON_256[i] fbd9678f 97f8384c 91fdb3c7 fddc1c26
+      i         60       61       62       63
+   CON_256[i] a4efd9e3 c8ce0e13 be66ecf1 d2478709
+      i         64       65       66       67
+   CON_256[i] 673a5e48 0b1bdbd0 0b948714 67b575bc
+      i         68       69       70       71
+   CON_256[i] 3dc3ebba 51e2228a f2f075dd 9ed11145
+      i         72       73       74       75
+   CON_256[i] 417112de 2d5090f6 cca9096f a088487b
+      i         76       77       78       79
+   CON_256[i] 8a4584b7 e664a43d a933c25b c512d21e
+      i         80       81       82       83
+   CON_256[i] b888e12d d4a9690f 644d58a6 086cacd3
+      i         84       85       86       87
+   CON_256[i] de372c53 b216d669 830a9629 ef2beb34
+      i         88       89       90       91
+   CON_256[i] 798c6324 15ad6dce 04cf99a2 68ee2eb3	  
+   \end{verbatim}
+
