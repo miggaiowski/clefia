@@ -219,8 +219,7 @@
     | y3 = | (0x0a * T_0) | \oplus | (0x02 * T_1) | \oplus | (0x08 * T_2) | \oplus | T_3           |
 
     Temos que o sinal * indica multiplicação em GF(2^8) onde o
-    polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1. Teremos uma
-    seção abaixo explicando como é feito as operações em GF(2^8).
+    polinômio primitivo é z^8 + z^4 + z^3 + z^2 + 1.
 
 ** Algoritmo de encriptação
 
@@ -505,7 +504,7 @@
    CON_256[i] de372c53 b216d669 830a9629 ef2beb34
       i         88       89       90       91
    CON_256[i] 798c6324 15ad6dce 04cf99a2 68ee2eb3	  
-
+   
 
 * Modo de operação CBC
 
@@ -538,7 +537,7 @@
  Como podemos ver, cada bloco cifrado é utilizado para gerar o próximo
  bloco. Logo, não é possível parelizar o CBC, sendo uma das suas
  principais desvantagem.
-   
+ 
 * Resultados experimentais
   Com o  intuito de compararar o  algoritmo Clefia com  o AES, fizemos
   vários testes  de cifragem e decifragem. Os  tempos obtidos aparecem
