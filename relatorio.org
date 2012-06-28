@@ -5,7 +5,7 @@
 #+DESCRIPTION: 
 #+KEYWORDS: 
 #+LANGUAGE:  en
-#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
 #+OPTIONS:   TeX:t LaTeX:nil skip:nil d:nil todo:t pri:nil tags:not-in-toc
 #+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 #+EXPORT_SELECT_TAGS: export
@@ -464,8 +464,25 @@ biblioteca OpenSSL.
 |---------------+-------------+----------------|
 
 * Conclusão
-  Nosso algoritmo é mais lento.
+  Conseguimos implementar  todas as partes do algoritmo  CLEFIA. Com a
+  implementação, pudemos  averiguar que  o programa estava  correto já
+  que foi possível  cifrar e decifrar vários arquivos  e os resultados
+  batiam com o esperado. 
 
+  Nossa implementação é lenta, apesar de termos tentado ao máximo usar
+  boas  práticas  de  programação  em  C  e  otimizar  o  código  para
+  velocidade. No  entando, é difícil  deixar um algoritmo  desse nível
+  com  uma performance  comparável a  uma implementação  livre  em tão
+  pouco tempo. 
+  Ainda assim, conseguimos  uma implementação que é em  média 15 vezes
+  mais lenta  que o AES. Não  sabemos o quanto é  possível aproximar o
+  CLEFIA  do  AES  em  termos  de  velocidade,  mas  estamos  bastante
+  satisfeitos com o que atigimos.
+
+  Com nossa implementação em mãos, outros alunos futuros da disciplina
+  poderiam  tentar otimizar o  código. Acreditamos  que este  seria um
+  exercícios interessante aos próximos alunos.
+  
 * Anexo: Valores constantes
 
     Abaixo temos as tabelas que representam os valores das constantes
