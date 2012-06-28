@@ -319,7 +319,7 @@ biblioteca OpenSSL.
    | *Saida*:   | rounds keys :    | RK = \{RK_{0}, ..., RK_{35}\}, RK_i tem 32 bits             |
    |            | whitening keys : | WK = \{WK_{0}, WK_{1}, WK_{2}, WK_{3}\},   WK_i tem 32 bits |
 
-    | *Passo 1.* | L \leftarrow GFN_{4,12}(CON_128[0], ..., CON_128[23], K0, ..., K3)                                                     |
+    | *Passo 1.* | L \leftarrow GFN_{4,12}(CON_128{0}, ..., CON_128{23}, K0, ..., K3)                                                     |
     | *Passo 2.* | WK0 \mid WK1 \mid WK2 \mid WK3 \leftarrow K                                                                            |
     | *Passo 3.* | For i = 0 to 8 do the following:                                                                               |
     |            | T \leftarrow L \oplus (CON_128[24 + 4i] \mid CON_128[24 + 4i + 1] \mid CON_128[24 + 4i + 2] \mid CON_128[24 + 4i + 3]) |
@@ -350,7 +350,7 @@ biblioteca OpenSSL.
 
     | *Passo 3.* | Let KL = KL0 \mid KL1 \mid KL2 \mid KL3                                                   |   |
     |            | KR = KR0 \mid KR1 \mid KR2 \mid KR3                                                       |   |
-    |            | LL \mid LR \leftarrow GFN_{8,10}(CON_k[0] , ..., CON_k[39], KL0, ..., KL3, KR0, ..., KR3) |   |
+    |            | LL \mid LR \leftarrow GFN_{8,10}(CON_k{0} , ..., CON_k{39}, KL0, ..., KL3, KR0, ..., KR3) |   |
 
    (Expanding KL,KR and LL,LR for a k-bit key)
 
@@ -372,7 +372,7 @@ biblioteca OpenSSL.
 
 *** Valores Constantes
     As tabelas de constantes encontram-se em anexo.
-
+    
 * Modo de operação CBC
 
  Como CLEFIA é um cifrador de blocos de comprimento fixo, no caso de
