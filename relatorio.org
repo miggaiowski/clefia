@@ -14,8 +14,10 @@
 #+LINK_HOME: 
 #+LATEX_HEADER: \usepackage{sbc-template}
 
-* Resumo
-  Pequeno texto
+\begin{abstract}
+Pequeno texto
+\end{abstract}
+
 * Introdução
 
   CLEFIA é um algoritmo de cifragem de blocos, desenvolvido pela SONY,
