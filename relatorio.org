@@ -15,7 +15,17 @@
 #+LATEX_HEADER: \usepackage{sbc-template}
 
 \begin{abstract}
-Pequeno texto
+Foi feito uma implementação em software do cifrador de
+blocos CLEFIA, na linguagem C. Esse relatório descreve todo o
+algoritmo, assim como os testes realizados. O algoritmo do CLEFIA
+utiliza duas partes, uma de geração de chaves e a outra de
+processamento de dados. A fase de geração de chaves gera, a partir de uma única chave K, todas as chaves
+necessárias para a fase de processamento de dados, que é a encriptação
+e decriptação. Essa chave K pode ser de 128, 192 ou 256 bits. Já o
+tamanho do bloco é sempre de 128 bits. Os testes foram realizados a
+partir da encriptação de um arquivo de 200278016 bytes utilizando o
+modo CBC e o resultado foi comparado com o do cifrador AES da
+biblioteca OpenSSL.
 \end{abstract}
 
 * Introdução
@@ -461,7 +471,7 @@ Pequeno texto
     Abaixo temos as tabelas que representam os valores das constantes
     utilizadas, CON_128, CON_192 e CON_256.
 
-   Table 7: CON_128[i] (0 <= i < 60)
+   Tabela 3: CON_128[i] (0 \le i < 60)
 
    \begin{verbatim}
       i           0        1        2        3
@@ -496,7 +506,7 @@ Pequeno texto
    CON_128[i] 50b63150 3c9757e7 1052b098 7c73b3a7
    \end{verbatim}
 
-   Table 8: CON_192[i] (0 <= i < 84)
+   Tabela 4: CON_192[i] (0 \le i < 84)
 
    \begin{verbatim}
       i           0        1        2        3
@@ -543,7 +553,7 @@ Pequeno texto
    CON_192[i] 0cb0895c 609151bb 3e51ec9e 5270b089
    \end{verbatim}
 
-   Table 9: CON_256[i] (0 <= i < 92)
+   Tabela 5: CON_256[i] (0 \le i < 92)
 
    \begin{verbatim}
       i          0        1        2        3
