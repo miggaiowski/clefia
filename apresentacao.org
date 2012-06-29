@@ -350,6 +350,8 @@
     |            | else if k = 256 :  |                                                                                                        |
     |            |                    | KL \leftarrow K0 \mid K1 \mid K2 \mid K3, KR \leftarrow K4 \mid K5 \mid K6 \mid K7                     |
 
+** Geração de chaves para o modo 192 e 256 bits
+
     | *Passo 3.* | Let KL = KL0 \mid KL1 \mid KL2 \mid KL3                                                   |   |
     |            | KR = KR0 \mid KR1 \mid KR2 \mid KR3                                                       |   |
     |            | LL \mid LR \leftarrow GFN_{8,10}(CON_k{0} , ..., CON_k{39}, KL0, ..., KL3, KR0, ..., KR3) |   |
@@ -392,6 +394,8 @@
  #+CAPTION:    Cifragem no modo CBC
  #+ATTR_LaTeX: width=\textwidth
  [[./Cbc_encryption.png]]
+
+** Modo de Operação CBC
 
 #+CAPTION:    Decifragem no modo CBC
  #+ATTR_LaTeX: width=\textwidth
@@ -471,5 +475,6 @@
 www.faqs.org/rfcs/rfc6114.html#
 www.sony.net/Products/cryptography/clefia/?j-short=clefia
 www.sony.net/Products/cryptography/clefia/download/data/clefia-design-1.0.pdf
-William Stallings - Cryptography and Network Security, 4th Edition
+William Stallings - Cryptography and Network Security,
+4th Edition
 \end{verbatim}
