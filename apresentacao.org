@@ -71,7 +71,8 @@
 ** Nossa implementacao GFN-4
 
    \begin{verbatim}
-      void gfn4(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
+      void gfn4(int r, unsigned int* rk, 
+                unsigned int *x, unsigned int *y) {
         int i;
         unsigned int temp;
         /* Step 1 */
@@ -91,6 +92,8 @@
           t2 = t3;
           t3 = temp;
         }
+   \end{verbatim}
+   \begin{verbatim}
         /* Step 3 */
         y[0] = t3;
         y[1] = t0;
@@ -119,7 +122,8 @@
 ** Nossa implementacao GFN-4
    
    \begin{verbatim}
-       void gfn8(int r, unsigned int* rk, unsigned int *x, unsigned int *y) {
+       void gfn8(int r, unsigned int* rk, 
+                 unsigned int *x, unsigned int *y) {
       int i;
       unsigned int temp;
       /* Step 1 */
