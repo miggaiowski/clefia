@@ -483,6 +483,8 @@ biblioteca OpenSSL.
   poderiam  tentar otimizar o  código. Acreditamos  que este  seria um
   exercícios interessante aos próximos alunos.
   
+* Bibliografia
+  
 * Anexo: Valores constantes
 
     Abaixo temos as tabelas que representam os valores das constantes
